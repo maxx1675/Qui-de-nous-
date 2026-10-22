@@ -76,6 +76,12 @@ textarea{margin-top:12px;resize:vertical}
 .bar{position:relative;display:flex;gap:10px;align-items:center;padding:7px 10px;margin:6px 0;border:2px solid var(--edge);border-radius:10px;overflow:hidden;font-weight:800}
 .bar i{position:absolute;left:0;top:0;bottom:0;background:color-mix(in srgb,var(--pink) 40%,transparent)}
 .bar span,.bar b{position:relative}.bar span{flex:1}
+.txt{margin:16px 0 4px;padding:18px 16px;background:var(--bg);border:2.5px solid var(--edge);border-radius:16px;font-size:clamp(1.15rem,4.6vw,1.5rem);font-weight:700;line-height:1.35;text-align:center;white-space:pre-wrap;word-break:break-word}
+.bubbles{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.bubble{font:inherit;font-weight:800;font-size:1.05rem;color:var(--ink);background:var(--surface);border:2.5px solid var(--edge);border-radius:99px;padding:11px 22px;cursor:pointer;box-shadow:3px 3px 0 var(--shc);transition:transform .08s,box-shadow .08s}
+.bubble:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--shc)}
+.bubble.on{background:var(--teal);color:#1b1340}
+.center{text-align:center}
 .warn{background:var(--amber);color:#1b1340;border:2px solid var(--edge);border-radius:12px;padding:8px 12px;font-weight:800;margin:0 0 12px}
 </style>
 </head>
@@ -88,7 +94,7 @@ textarea{margin-top:12px;resize:vertical}
   <header class="hero">
     <div class="logo">🎉</div>
     <h1>Qui de nous&nbsp;?</h1>
-    <p>Chacun joue sur son téléphone ou son ordi : crée un salon, partage le code, et c’est parti.</p>
+    <p>Chacun joue sur son téléphone ou son ordinateur : crée un salon, partage le code et jouez ensemble par écrit.</p>
   </header>
   <div class="card">
     <h2>Ton prénom</h2>
@@ -130,9 +136,11 @@ textarea{margin-top:12px;resize:vertical}
           <button data-act="rp" aria-label="Plus de manches">+</button>
         </div>
       </div>
-      <label class="opt"><input type="checkbox" data-type="vote"><span>🗳️ <b>Vote</b><small>Qui est le plus beau, le plus radin, le plus…&nbsp;?</small></span></label>
-      <label class="opt"><input type="checkbox" data-type="anecdote"><span>🕵️ <b>Anecdote mystère</b><small>Une histoire racontée sans nom : à qui appartient-elle&nbsp;?</small></span></label>
-      <label class="opt"><input type="checkbox" data-type="description"><span>🎭 <b>Qui est-ce&nbsp;?</b><small>Décrire quelqu’un du groupe sans le nommer</small></span></label>
+      <label class="opt"><input type="checkbox" data-type="vote"><span>🗳️ <b>Vote</b><small>« Qui est le plus… ? » Chacun écrit sa réponse, puis on devine qui a écrit quoi.</small></span></label>
+      <label class="opt"><input type="checkbox" data-type="anecdote"><span>🕵️ <b>Anecdote mystère</b><small>Tout le monde écrit une anecdote ; elles sont lues une par une et on devine l’auteur.</small></span></label>
+      <label class="opt"><input type="checkbox" data-type="description"><span>🎭 <b>Qui est-ce&nbsp;?</b><small>Le jeu choisit une personne ; tous les autres la décrivent par écrit, puis on devine qui a écrit quoi.</small></span></label>
+      <label class="opt"><input type="checkbox" data-type="yesno"><span>🙋 <b>Oui ou non</b><small>Chacun répond en secret. Les réponses et les prénoms sont révélés à la fin.</small></span></label>
+      <label class="opt"><input type="checkbox" data-type="confession"><span>🤫 <b>Tu as déjà… ?</b><small>Réponds oui/non ; si oui, raconte l’anecdote. Les réponses seront révélées ensemble.</small></span></label>
       <label class="opt"><input type="checkbox" data-type="photo"><span>📸 <b>Photo mystère</b><small>À qui est cette photo&nbsp;? Dispo dès qu’un joueur a donné son accord.</small></span></label>
       <label class="opt"><input type="checkbox" id="spicy"><span>🌶️ <b>Mode piquant</b><small>Des questions et des thèmes plus gênants</small></span></label>
     </div>
@@ -204,7 +212,28 @@ const VOTE_HOT = [
   "Qui stalke ses ex sur les réseaux ?",
   "Qui a le pire goût en matière d’ex ?",
   "Qui sortirait avec un inconnu rencontré ce soir ?",
-  "Qui fera demain un truc qu’il regrettera ?"
+  "Qui fera demain un truc qu’il regrettera ?",
+  "Qui a le plus de chances de finir SDF après une série de mauvaises décisions ?",
+  "Qui serait capable de se faire virer le premier de son boulot ?",
+  "Qui finirait fauché parce qu’il a tout dépensé en soirées ?",
+  "Qui est le plus susceptible de se faire recaler à l’entrée d’une boîte ?",
+  "Qui ferait la pire excuse après avoir été pris en flagrant délit ?",
+  "Qui est le plus susceptible de revenir avec son ex pour la cinquième fois ?",
+  "Qui gâcherait ses propres chances avec un message gênant ?",
+  "Qui survivrait le moins longtemps s’il devait gérer sa vie tout seul ?",
+  "Qui finirait le plus probablement ruiné à cause d’une mauvaise décision ?",
+  "Qui pourrait se faire bannir d’un bar avant la fin de la soirée ?",
+  "Qui mentirait le plus mal s’il était interrogé par la police ?",
+  "Qui enverrait un message à son ex à 3 heures du matin ?",
+  "Qui ferait une énorme scène pour une raison ridicule ?",
+  "Qui serait le plus susceptible de ghoster quelqu’un sans explication ?",
+  "Qui pourrait ruiner un premier rendez-vous en moins de dix minutes ?",
+  "Qui raconterait un secret alors qu’on lui a juré de le garder ?",
+  "Qui serait le plus susceptible de démissionner sur un coup de tête ?",
+  "Qui ferait semblant d’avoir réussi alors qu’il n’a rien compris ?",
+  "Qui serait le plus mauvais influenceur de tous les temps ?",
+  "Qui prendrait la pire décision possible après avoir dit ‘faites-moi confiance’ ?",
+  "Qui serait le plus susceptible de se retrouver dans une galère improbable ?"
 ];
 const ANEC = [
   "Une honte absolue en public",
@@ -216,7 +245,14 @@ const ANEC = [
   "La pire excuse inventée pour éviter quelque chose",
   "Une bêtise d’enfance que les parents n’ont jamais sue",
   "Un objet perdu ou cassé au pire moment",
-  "Une rencontre improbable avec une personne célèbre"
+  "Une rencontre improbable avec une personne célèbre",
+  "Ta plus grosse connerie ?",
+  "Une anecdote de date qui a mal tourné",
+  "Une anecdote du lycée que tu n’as jamais oubliée",
+  "Une honte mémorable au lycée",
+  "Une soirée où tout a dérapé",
+  "Une bêtise que tu regrettes encore",
+  "Un moment gênant pendant un rendez-vous"
 ];
 const ANEC_HOT = [
   "Le moment le plus gênant avec un(e) ex",
@@ -225,21 +261,49 @@ const ANEC_HOT = [
   "Une situation où l’on s’est fait surprendre au mauvais moment"
 ];
 const DEFIS = [
-  "uniquement avec des comparaisons (« il/elle est comme un… »)",
-  "en décrivant son caractère, pas son physique",
-  "en décrivant uniquement son physique",
-  "en racontant une habitude qu’on lui connaît bien",
-  "avec des mimes uniquement, zéro parole !",
-  "trois mots maximum à la fois",
-  "en imitant sa façon de parler",
-  "comme si c’était un personnage de dessin animé"
+  "décris son caractère, pas son physique",
+  "décris uniquement son style et son apparence",
+  "raconte une habitude qu’on lui connaît bien",
+  "utilise trois mots maximum",
+  "décris-la comme un personnage de dessin animé",
+  "utilise uniquement des comparaisons"
+];
+const YESNO = [
+  "Tu t’es déjà chié dessus ?",
+  "Tu as déjà menti pour éviter une soirée ?",
+  "Tu as déjà fouillé le téléphone de quelqu’un ?",
+  "Tu as déjà envoyé un message puis regretté immédiatement ?",
+  "Tu as déjà fait semblant d’aimer un cadeau ?",
+  "Tu as déjà stalké un ex sur les réseaux ?",
+  "Tu as déjà eu un énorme crush sur quelqu’un ici ?",
+  "Tu as déjà inventé une excuse pour rentrer plus tôt ?",
+  "Tu as déjà embrassé quelqu’un puis regretté ?",
+  "Tu as déjà fait semblant d’être malade pour ne pas aller quelque part ?",
+  "Tu as déjà gardé un secret que tu aurais dû révéler ?",
+  "Tu as déjà eu honte d’un message que tu avais envoyé ?"
+];
+const CONFESSION = [
+  "Tu as déjà vomi en soirée ?",
+  "Tu as déjà fait une énorme connerie en soirée ?",
+  "Tu as déjà menti à un rendez-vous amoureux ?",
+  "Tu as déjà envoyé un message gênant à la mauvaise personne ?",
+  "Tu as déjà séché les cours sans raison valable ?",
+  "Tu as déjà fait une bêtise au lycée qui aurait pu te coûter cher ?",
+  "Tu as déjà embrassé quelqu’un et regretté juste après ?",
+  "Tu as déjà eu un rencard catastrophique ?",
+  "Tu as déjà cassé quelque chose chez quelqu’un sans l’avouer ?",
+  "Tu as déjà inventé une histoire pour impressionner quelqu’un ?",
+  "Tu as déjà été beaucoup trop loin pendant une soirée ?",
+  "Tu as déjà fait quelque chose de tellement gênant que tu y repenses encore ?"
 ];
 
 const META = {
-  vote:{ico:"🗳️",name:"Vote",tc:"var(--pink)",how:"Chacun vote sur son écran. La personne la plus désignée remporte la manche (+1)."},
-  anecdote:{ico:"🕵️",name:"Anecdote mystère",tc:"var(--amber)",how:"Sans citer de nom, racontez à voix haute une anecdote vraie sur ce thème : la vôtre ou celle d’un autre joueur. Les autres devinent à qui elle appartient (+1 par bonne réponse)."},
-  description:{ico:"🎭",name:"Qui est-ce ?",tc:"var(--teal)",how:"Celui qui décrit voit la cible sur son écran et la décrit à voix haute sans dire son prénom. Les autres devinent (+1 pour ceux qui trouvent, +1 pour qui décrit si on trouve)."},
-  photo:{ico:"📸",name:"Photo mystère",tc:"var(--violet)",how:"Une photo tirée au hasard dans la galerie d’un joueur, et validée par lui : à qui appartient-elle ? (+1 par bonne réponse)"}
+  vote:{ico:"🗳️",name:"Vote",tc:"var(--pink)",how:"Écris ta réponse (un prénom + pourquoi) sans te trahir. Ensuite les textes sont lus un par un : devine qui a écrit chacun. +1 si tu trouves, +1 pour l’auteur par joueur trompé."},
+  anecdote:{ico:"🕵️",name:"Anecdote mystère",tc:"var(--amber)",how:"Tout le monde écrit une anecdote perso sur le thème. Les textes sont lus un par un : devine qui a écrit chacun. +1 si tu trouves, +1 pour l’auteur par joueur trompé."},
+  description:{ico:"🎭",name:"Qui est-ce ?",tc:"var(--teal)",how:"Tous (sauf la personne décrite) écrivent sa description, sans son prénom. Les textes sont lus un par un : devine qui a écrit chacun. +1 si tu trouves, +1 pour l’auteur par joueur trompé."},
+  yesno:{ico:"🙋",name:"Oui ou non",tc:"var(--pink)",how:"Chacun répond en secret. À la révélation, le prénom de chaque joueur apparaît avec sa réponse."},
+  confession:{ico:"🤫",name:"Tu as déjà… ?",tc:"var(--pink)",how:"Réponds Oui ou Non en secret. Si tu réponds Oui, écris ton anecdote ; tout sera révélé à la fin."},
+  photo:{ico:"📸",name:"Photo mystère",tc:"var(--violet)",how:"Une photo tirée au hasard dans la galerie d’un joueur, et validée par lui : à qui est cette photo ? (+1 par bonne réponse)."}
 };
 
 /* ---------- Utilitaires ---------- */
@@ -258,8 +322,8 @@ const ME = (()=>{ let v=""; try{v=sessionStorage.getItem("qdn:id")||"";}catch(e)
    Les joueurs envoient leurs actions à l’hôte (topic "act"). */
 let R=null, S=null, isHost=false, code="", DECK=[], lastSt=0, tk=0;
 let PH={i:-1,n:0,parts:[],img:""};
-const L={name:"",photos:[],ok:false,used:[],cand:-1,candFor:-1,out:null,seen:-1,note:"",
-  cfg:{rounds:CONFIG.NOMBRE_DE_MANCHES,types:{vote:true,anecdote:true,description:true,photo:false},spicy:false,custom:""}};
+const L={name:"",photos:[],ok:false,used:[],cand:-1,candFor:-1,out:null,seen:-1,note:"",draft:"",
+  cfg:{rounds:CONFIG.NOMBRE_DE_MANCHES,types:{vote:true,anecdote:true,description:true,yesno:true,confession:true,photo:false},spicy:false,custom:""}};
 const socket = io();
 const ROOM = Promise.resolve({join: async roomName => {
   const ok = await new Promise(resolve => socket.emit("join-room", roomName, resolve));
@@ -279,6 +343,9 @@ const ROOM = Promise.resolve({join: async roomName => {
 }});
 const nm = id => (S.pl.find(p=>p.id===id)||{n:"?"}).n;
 const online = () => new Set([ME, ...R.peers().map(p=>p.presence&&p.presence.id).filter(Boolean)]);
+const isW = t => ["vote","anecdote","description"].includes(t);
+const writers = () => S.pl.filter(p=>!(S.r.type==="description"&&p.id===S.r.target)).map(p=>p.id);
+const wcount = () => { const on=online(), w=writers().filter(x=>on.has(x)); return w.filter(x=>S.answers&&S.answers[x]).length+"/"+w.length; };
 const eligIds = () => (S.r.type==="vote" ? S.pl : S.pl.filter(p=>p.id!==S.r.who)).map(p=>p.id);
 const cfgOut = () => ({rounds:L.cfg.rounds,types:L.cfg.types,spicy:L.cfg.spicy});
 const msg = t => { $("#hmsg").textContent = t; };
@@ -289,6 +356,7 @@ function send(d){
   d.p = ME;
   if(isHost) return hostAct(d);
   if(d.k==="vote" && S) S.vt[ME]=d.c;
+  if(d.k==="answer" && S && isW(S.r&&S.r.type)){ S.answers=S.answers||{}; S.answers[ME]=d.text; }
   if(R) R.emit("act",d).catch(()=>{});
   if(d.k==="vote") render();
 }
@@ -323,29 +391,60 @@ function hostAct(d){
   } else if(P){
     const r=S.r, ask=S.ph==="play"&&S.st==="ask", valid=c=>S.pl.some(x=>x.id===c);
     if(d.k==="prof"){ P.ok=d.ok?1:0; P.np=Math.min(12,Math.max(0,+d.np|0)); }
-    else if(d.k==="vote"){ if(!ask||!eligIds().includes(d.p)||!valid(d.c)||(r.type!=="vote"&&d.c===d.p)) return; S.vt[d.p]=d.c; }
-    else if(d.k==="key"){ if(!ask||r.type!=="anecdote"||r.who!==d.p||!valid(d.c)) return; r.key=d.c; }
+    else if(d.k==="vote"){
+      if(S.ph!=="play"||!r) return;
+      if(isW(r.type)){
+        if(S.st!=="guess"||S.sub!=="g") return;
+        const a=S.order[S.gi];
+        if(d.p===a||!writers().includes(d.c)||d.c===d.p) return;
+        S.vt[d.p]=d.c;
+      } else {
+        if(!ask||!eligIds().includes(d.p)) return;
+        if(!["yes","no"].includes(d.c)) return;
+        S.vt[d.p]=d.c; if(r.type==="confession"&&d.c==="no"&&S.answers) delete S.answers[d.p];
+      }
+    }
+    else if(d.k==="answer"){
+      if(S.ph!=="play"||!r) return;
+      const okc = r.type==="confession" ? (ask&&S.vt[d.p]==="yes") : isW(r.type) ? (S.st==="write"&&writers().includes(d.p)) : false;
+      if(!okc) return;
+      const answer=String(d.text||"").replace(/[\u0000-\u001f\u007f]/g," ").trim().slice(0,500);
+      if(!answer) return;
+      S.answers=S.answers||{};
+      if(isW(r.type)&&S.answers[d.p]) return;
+      S.answers[d.p]=answer;
+    }
     else if(d.k==="phshow"){ if(S.ph==="play"&&S.st==="prep"&&r.type==="photo"&&r.who===d.p) S.st="ask"; }
     else if(d.k==="phskip"){ if(S.ph==="play"&&S.st==="prep"&&r.type==="photo"&&r.who===d.p) return next(); }
   }
   auto(); bc(); render();
 }
 function auto(){
-  if(S.ph!=="play"||S.st!=="ask") return;
-  const on=online(), e=eligIds().filter(x=>on.has(x));
-  if(e.length && e.every(x=>S.vt[x]) && (S.r.type!=="anecdote"||S.r.key)) reveal();
-}
-function reveal(){
-  const r=S.r, v=S.vt, add=(id,n)=>{S.sc[id]=(S.sc[id]||0)+n;};
-  S.st="res";
-  if(r.type==="vote"){
-    const t={}; Object.values(v).forEach(c=>t[c]=(t[c]||0)+1);
-    const m=Math.max(0,...Object.values(t)); if(m) for(const c in t) if(t[c]===m) add(c,1);
-  } else if(r.key){
-    let ok=0; for(const p in v) if(v[p]===r.key){ add(p,1); ok++; }
-    if(r.type==="description" && ok) add(r.who,1);
+  if(S.ph!=="play"||!S.r) return;
+  const on=online();
+  if(isW(S.r.type)){
+    if(S.st==="write"){ const w=writers().filter(x=>on.has(x)); if(w.length&&w.every(x=>S.answers&&S.answers[x])) startGuess(); }
+    else if(S.st==="guess"&&S.sub==="g"){ const a=S.order[S.gi], g=writers().concat(S.r.type==="description"?[S.r.target]:[]).filter(x=>x!==a&&on.has(x)); if(g.length&&g.every(x=>S.vt[x]!==undefined)) revealOne(); }
+    return;
   }
+  if(S.st!=="ask") return;
+  const e=eligIds().filter(x=>on.has(x));
+  const writtenReady = S.r.type!=='confession' || e.every(id => S.vt[id] !== 'yes' || String(S.answers?.[id]||'').trim().length>0);
+  if(e.length && e.every(x=>S.vt[x]!==undefined) && writtenReady) reveal();
 }
+function reveal(){ S.st="res"; }
+function startGuess(){
+  const ids=Object.keys(S.answers||{}).filter(id=>writers().includes(id)&&String(S.answers[id]).trim());
+  if(!ids.length) return;
+  S.order=shuffle(ids); S.gi=0; S.sub="g"; S.vt={}; S.st="guess";
+}
+function revealOne(){
+  const a=S.order[S.gi]; let ko=0;
+  S.sub="r";
+  for(const p in S.vt){ if(S.vt[p]===a) S.sc[p]=(S.sc[p]||0)+1; else ko++; }
+  S.sc[a]=(S.sc[a]||0)+ko;
+}
+function nextText(){ S.gi++; S.vt={}; S.sub="g"; }
 function makeDraw(first, rest){
   let q = [...shuffle(first), ...shuffle(rest)];
   return () => { if(!q.length) q = shuffle([...first, ...rest]); return q.shift(); };
@@ -361,16 +460,18 @@ function buildDeck(){
   for(let k=0;k<rounds;k++){
     const opts=types.filter(t=>t!==last), t=pick(opts.length?opts:types); last=t;
     if(t==="vote") deck.push({type:t,text:dv()});
-    else if(t==="anecdote") deck.push({type:t,text:da(),who:dp()});
+    else if(t==="yesno") deck.push({type:t,text:pick(YESNO)});
+    else if(t==="confession") deck.push({type:t,text:pick(CONFESSION)});
+    else if(t==="anecdote") deck.push({type:t,text:da()});
     else if(t==="photo"){ const who=dh(); deck.push({type:t,who,key:who}); }
-    else { const who=dp(); deck.push({type:t,who,key:pick(ids.filter(p=>p!==who)),rule:dd()}); }
+    else deck.push({type:t,target:dp(),rule:dd()});
   }
   return deck;
 }
 function next(){
   S.i++;
   if(S.i>=S.N) { S.ph="end"; }
-  else { S.ph="play"; S.r=DECK[S.i]; S.st=S.r.type==="photo"?"prep":"ask"; S.vt={}; }
+  else { S.ph="play"; S.r=DECK[S.i]; S.st=S.r.type==="photo"?"prep":isW(S.r.type)?"write":"ask"; S.vt={}; S.answers={}; S.order=[]; S.gi=0; S.sub="g"; L.draft=""; }
   bc(); render();
 }
 function startGame(){
@@ -466,14 +567,58 @@ function scoreCard(){
   const s=[...S.pl].sort((a,b)=>(S.sc[b.id]||0)-(S.sc[a.id]||0));
   return `<div class="card"><h2>🏆 Points</h2>${s.map(p=>`<div class="prow"><span>${esc(p.n)}</span><b>${S.sc[p.id]||0}</b></div>`).join("")}</div>`;
 }
+function gameW(){
+  const key=[S.i,S.st,S.sub,S.gi,!!(S.answers&&S.answers[ME])].join("|");
+  const ae=document.activeElement;
+  if(ae&&ae.id==="writtenAnswer"&&L.rk===key){ const w=$("#wcount"); if(w) w.textContent=wcount(); return; }
+  L.rk=key;
+  const r=S.r, M=META[r.type], n=S.N, last=S.i===n-1, W=writers(), me=W.includes(ME), ans=S.answers||{};
+  const g=S.st==="guess", rev=g&&S.sub==="r", a=g?S.order[S.gi]:null;
+  const fresh=L.seen!==S.i; L.seen=S.i; if(fresh) L.draft="";
+  const q = r.type==="description" ? (ME===r.target ? `Les autres te décrivent… <b>toi</b> 😏` : `Décris <b>${esc(nm(r.target))}</b>`) : esc(r.text);
+  const rule = r.type==="description" ? `<p class="how">🎯 Consigne : ${esc(r.rule)}. N’écris pas son prénom.</p>` : "";
+  const ph = {vote:"Un prénom + pourquoi (ex : Léa, parce que…)",anecdote:"Raconte ton anecdote sans te trahir…",description:"Décris la personne sans écrire son prénom…"}[r.type];
+  let card="", below="", nav="";
+  if(!g){
+    card=`<p class="big">${q}</p>${rule}<p class="how">${M.how}</p>`;
+    if(!me) below=`<div class="card center"><p class="hint">Les autres écrivent… patiente un instant.</p></div>`;
+    else if(ans[ME]) below=`<div class="card center"><p class="hint">✅ Ton texte est envoyé. On attend les autres.</p></div>`;
+    else below=`<div class="card"><h2>✍️ Ton texte</h2><textarea id="writtenAnswer" rows="4" maxlength="500" placeholder="${esc(ph)}">${esc(L.draft)}</textarea><button class="btn primary big" data-act="answer">Envoyer mon texte</button></div>`;
+    below+=`<p class="hint center">Textes reçus : <span id="wcount">${wcount()}</span></p>`;
+    if(isHost) nav=`<div class="nav"><button class="btn primary" data-act="reveal"${Object.keys(ans).length?"":" disabled"}>Passer à la lecture</button></div><button class="link" data-act="skip">Passer cette manche</button>`;
+  } else {
+    card=`<p class="how">Texte ${S.gi+1} sur ${S.order.length}</p><p class="how">${M.ico} ${q}</p><div class="txt">${esc(ans[a]||"")}</div>`;
+    const on=online();
+    if(!rev){
+      if(a===ME) below=`<div class="card center"><p class="hint">C’est ton texte ! Garde ton air innocent 😇</p></div>`;
+      else below=`<div class="card center"><h2>Qui a écrit ça ?</h2><div class="bubbles">${W.filter(x=>x!==ME).map(id=>`<button class="bubble${S.vt[ME]===id?" on":""}" data-act="vote" data-c="${esc(id)}">${esc(nm(id))}</button>`).join("")}</div></div>`;
+      const gs=W.concat(r.type==="description"?[r.target]:[]).filter(x=>x!==a&&on.has(x));
+      below+=`<p class="hint center">Votes reçus : ${gs.filter(x=>S.vt[x]!==undefined).length}/${gs.length}</p>`;
+      if(isHost) nav=`<div class="nav"><button class="btn primary" data-act="reveal">Révéler maintenant</button></div><button class="link" data-act="skip">Passer cette manche</button>`;
+    } else {
+      const v=S.vt, ids=Object.keys(v), ko=ids.filter(p=>v[p]!==a).length;
+      below=`<div class="card"><h2>C’était : <b>${esc(nm(a))}</b> ✍️</h2>`+(ids.length?ids.map(p=>`<div class="prow"><span>${esc(nm(p))}</span><span>${esc(nm(v[p]))}</span><b>${v[p]===a?"✅ +1":"❌"}</b></div>`).join(""):`<p class="hint">Personne n’a voté.</p>`)+`<p class="hint">${esc(nm(a))} gagne +${ko} (${ko} joueur${ko>1?"s":""} trompé${ko>1?"s":""}).</p></div>`;
+      const lastT=S.gi>=S.order.length-1;
+      nav = isHost ? `<div class="nav"><button class="btn primary" data-act="${lastT?"next":"nexttext"}">${lastT?(last?"Terminer la partie 🏁":"Manche suivante"):"Texte suivant ➜"}</button></div>` : `<p class="hint">L’hôte passe à la suite.</p>`;
+    }
+  }
+  $("#game").innerHTML=`<div class="top"><span>Manche ${S.i+1} sur ${n}</span><span>${M.ico} ${M.name}</span></div>
+    <div class="prog"><i style="width:${(S.i+1)/n*100}%"></i></div>
+    <article class="rcard${fresh?" fresh":""}" style="--tc:${M.tc}"><span class="badge">${M.ico} ${M.name}</span>${card}</article>
+    ${below}${scoreCard()}${nav}
+    <button class="link" data-act="leave">Quitter le salon</button>`;
+  if(fresh) window.scrollTo(0,0);
+}
 function game(){
+  if(isW(S.r.type)) return gameW();
   const r=S.r, M=META[r.type], n=S.N, last=S.i===n-1, me=ME===r.who, ask=S.st==="ask", res=S.st==="res", e=eligIds();
-  const fresh=L.seen!==S.i; L.seen=S.i;
+  const fresh=L.seen!==S.i; L.seen=S.i; if(fresh) L.draft="";
   const btn=(p,act,on)=>`<button class="pick${on?" on":""}" data-act="${act}" data-c="${esc(p.id)}">${esc(p.n)}</button>`;
   let b="";
   if(r.type==="vote") b=`<p class="big">${esc(r.text)}</p>`;
-  else if(r.type==="anecdote") b=`<p class="who">🎙️ Qui raconte : <b>${esc(nm(r.who))}</b></p><p class="big">${esc(r.text)}</p>`;
-  else if(r.type==="description") b=`<p class="who">🗣️ Qui décrit : <b>${esc(nm(r.who))}</b></p><p class="big">Décris la personne mystère&nbsp;!</p>`;
+  else if(r.type==="anecdote") b=`<p class="who">✍️ ${me?"Tu écris ton anecdote :":"Un joueur écrit son anecdote…"}</p><p class="big">${esc(r.text)}</p>`;
+  else if(r.type==="description") b=`<p class="who">✍️ Qui écrit la description : <b>${esc(nm(r.who))}</b></p><p class="big">Décris la personne choisie par le jeu, sans écrire son prénom.</p>`;
+  else if(["yesno","confession"].includes(r.type)) b=`<p class="big">${esc(r.text)}</p><p class="how">Réponds honnêtement : les prénoms et les réponses seront révélés ensemble.</p>${r.type==="confession"?"<p class=\"how\">Si tu réponds Oui, raconte ensuite brièvement ce qui s’est passé.</p>":""}`;
   else if(S.st==="prep"){
     const u=me&&cand();
     b = !me ? `<p class="big">📸 ${esc(nm(r.who))} choisit une photo…</p>`
@@ -482,25 +627,45 @@ function game(){
   } else b=`<p class="big">À qui est cette photo&nbsp;?</p>`+(PH.i===S.i&&PH.img?`<img class="ph" src="${PH.img}" alt="Photo mystère">`:`<p class="hint">Chargement de la photo…</p>`);
   if(S.st!=="prep") b+=`<p class="how">${M.how}</p>`;
   if(r.type==="description"){
-    b+=`<p class="how">🎯 Défi : ${esc(r.rule)}.</p>`;
-    if(me) b+=`<div class="secret"><small>Seul(e) toi vois ça&nbsp;!</small><p>À décrire : <b>${esc(nm(r.key))}</b></p></div>`;
+    b+=`<p class="how">🎯 Consigne : ${esc(r.rule)}.</p>`;
+    if(me) b+=`<div class="secret"><small>Seul(e) toi vois la personne à décrire.</small><p>Décris : <b>${esc(nm(r.key))}</b></p></div>`;
   }
+  if(r.type==="anecdote" && me) b+=`<div class="secret"><small>Consigne secrète</small><p>Raconte une anecdote personnelle sur ce thème. Les autres devront deviner que c’est la tienne.</p></div>`;
   let a="";
   if(ask){
     const on=online(), ee=e.filter(x=>on.has(x));
-    if(e.includes(ME)) a=`<h2>${r.type==="vote"?"Ton vote":"Ta réponse"}</h2><div class="picks">${(r.type==="vote"?S.pl:S.pl.filter(p=>p.id!==ME)).map(p=>btn(p,"vote",S.vt[ME]===p.id)).join("")}</div>`;
-    else if(me&&r.type==="anecdote") a=`<h2>À qui appartient vraiment cette anecdote&nbsp;?</h2><div class="picks">${S.pl.map(p=>btn(p,"key",r.key===p.id)).join("")}</div><p class="hint">Seul(e) toi vois ça : ton choix sert à compter les points.</p>`;
-    else a=`<p class="hint">Les autres répondent…</p>`;
-    a+=`<p class="hint">Réponses : ${ee.filter(x=>S.vt[x]).length}/${ee.length}</p>`;
+    if(["yesno","confession"].includes(r.type)){
+      a=`<h2>Ta réponse</h2><div class="picks"><button class="pick${S.vt[ME]==="yes"?" on":""}" data-act="vote" data-c="yes">Oui</button><button class="pick${S.vt[ME]==="no"?" on":""}" data-act="vote" data-c="no">Non</button></div>`;
+      if(r.type==="confession" && S.vt[ME]==="yes") {
+        const submitted=!!(S.answers&&S.answers[ME]);
+        a+=submitted?`<p class="hint">Ton anecdote est envoyée. Elle sera révélée avec les réponses.</p>`:`<h2>Raconte l’anecdote</h2><textarea id="writtenAnswer" rows="4" maxlength="500" placeholder="Raconte ce qui s’est passé…">${esc(L.draft)}</textarea><button class="btn primary big" data-act="answer">Envoyer mon anecdote</button>`;
+      } else if(r.type==="confession" && S.vt[ME]==="no") a+=`<p class="hint">Tu as répondu Non. Tu peux attendre la révélation.</p>`;
+    } else if(['anecdote','description'].includes(r.type) && me){
+      const submitted=!!(S.answers&&S.answers[ME]);
+      a=submitted?`<p class="hint">Ton texte est envoyé. Les autres joueurs votent maintenant.</p>`:`<h2>${r.type==="anecdote"?"Écris ton anecdote":"Écris la description"}</h2><textarea id="writtenAnswer" rows="4" maxlength="500" placeholder="Écris ici…">${esc(L.draft)}</textarea><button class="btn primary big" data-act="answer">Envoyer ma réponse</button>`;
+      if(r.type==="anecdote") a+=`<p class="hint">Raconte une anecdote personnelle sur le thème. Les autres devront deviner qui l’a écrite.</p>`;
+    } else if(e.includes(ME)){
+      a=`<h2>${r.type==="vote"?"Vote : qui correspond à la question ?":"Qui est la personne mystère ?"}</h2><div class="picks">${(r.type==="vote"||r.type==="anecdote"?S.pl:S.pl.filter(p=>p.id!==r.who)).map(p=>btn(p,"vote",S.vt[ME]===p.id)).join("")}</div>`;
+      if(['anecdote','description'].includes(r.type) && !S.answers?.[r.who]) a=`<p class="hint">${r.type==='anecdote'?'Un joueur écrit son anecdote…':esc(nm(r.who))+' écrit sa réponse…'}</p>`;
+    } else a=`<p class="hint">Les autres joueurs répondent…</p>`;
+    a+=`<p class="hint">Votes reçus : ${ee.filter(x=>S.vt[x]!==undefined).length}/${ee.length}</p>`;
   } else if(res){
     if(r.type==="vote"){
       const t={}; Object.values(S.vt).forEach(c=>t[c]=(t[c]||0)+1); const mx=Math.max(1,...Object.values(t));
       a=`<h2>Résultat</h2>`+S.pl.map(p=>({p,v:t[p.id]||0})).sort((x,y)=>y.v-x.v).map(o=>`<div class="bar"><i style="width:${o.v/mx*100}%"></i><span>${esc(o.p.n)}</span><b>${o.v}</b></div>`).join("");
-    } else a=`<h2>Réponse : <b>${r.key?esc(nm(r.key)):"non indiquée"}</b></h2>`+(r.key?e.map(x=>`<div class="prow"><span>${esc(nm(x))}</span><span>${S.vt[x]?esc(nm(S.vt[x])):"—"}</span><b>${S.vt[x]===r.key?"✅":"❌"}</b></div>`).join(""):"");
+    } else if(r.type==="yesno"){
+      a=`<h2>Réponses révélées</h2>`+S.pl.map(p=>`<div class="prow"><span>${esc(p.n)}</span><b>${S.vt[p.id]==="yes"?"✅ OUI":S.vt[p.id]==="no"?"❌ NON":"— Pas de réponse"}</b></div>`).join("");
+    } else if(r.type==="confession"){
+      a=`<h2>Réponses et anecdotes révélées</h2>`+S.pl.map(p=>`<div class="card"><h2>${esc(p.n)} — ${S.vt[p.id]==="yes"?"✅ OUI":S.vt[p.id]==="no"?"❌ NON":"— Pas de réponse"}</h2>${S.vt[p.id]==="yes"?`<p>${esc(S.answers?.[p.id]||"Aucune anecdote envoyée.")}</p>`:""}</div>`).join("");
+    } else {
+      const written=(S.answers&&S.answers[r.who])||"Aucune réponse écrite.";
+      a=`<h2>${r.type==="anecdote"?"Anecdote dévoilée":"Réponse écrite par "+esc(nm(r.who))}</h2><p>${esc(written)}</p><h2>${r.type==="anecdote"?"Cette anecdote appartenait à :":"La personne mystère était :"} <b>${r.key?esc(nm(r.key)):"non indiquée"}</b></h2>`+(r.key?e.map(x=>`<div class="prow"><span>${esc(nm(x))}</span><span>${S.vt[x]?esc(nm(x)):"—"}</span><b>${S.vt[x]===r.key?"✅ Bonne réponse · +1":"❌"}</b></div>`).join(""):"");
+    }
     a=`<div class="card">${a}</div>`;
   }
   const nav = !isHost ? (res?`<p class="hint">L’hôte lance la manche suivante.</p>`:"")
     : res ? `<div class="nav"><button class="btn primary" data-act="next">${last?"Terminer la partie 🏁":"Manche suivante"}</button></div>`
+    : S.st==="ask" && S.r.type==="yesno" ? `<p class="hint">Les réponses seront révélées quand tout le monde aura répondu.</p><button class="link" data-act="skip">Passer cette manche</button>`
     : S.st==="ask" ? `<div class="nav"><button class="btn primary" data-act="reveal">Révéler maintenant</button></div><button class="link" data-act="skip">Passer cette manche</button>`
     : `<button class="link" data-act="skip">Passer cette manche</button>`;
   $("#game").innerHTML=`<div class="top"><span>Manche ${S.i+1} sur ${n}</span><span>${M.ico} ${M.name}</span></div>
@@ -531,7 +696,7 @@ async function enter(host){
   try{ R=await ns.join("qdn-"+c.toLowerCase()); }catch(e){ return msg("Connexion impossible, réessaie."); }
   code=c; isHost=host; S=null; bind();
   if(host){
-    S={h:ME,ph:"lobby",pl:[{id:ME,n:name,ok:0,np:0}],cfg:cfgOut(),i:0,N:0,sc:{},vt:{},st:"ask",r:null};
+    S={h:ME,ph:"lobby",pl:[{id:ME,n:name,ok:0,np:0}],cfg:cfgOut(),i:0,N:0,sc:{},vt:{},answers:{},st:"ask",r:null};
     render();
   } else {
     tick();
@@ -556,8 +721,16 @@ function act(a,b){
     case "rm": case "rp": if(isHost){ L.cfg.rounds=clamp(L.cfg.rounds+(a==="rp"?1:-1)); bc(); render(); } break;
     case "start": if(isHost&&!problem()) startGame(); break;
     case "again": if(isHost){ S.ph="lobby"; bc(); render(); } break;
-    case "vote": case "key": send({k:a,c:b.dataset.c}); break;
-    case "reveal": if(isHost&&S.st==="ask"){ reveal(); bc(); render(); } break;
+    case "vote": send({k:a,c:b.dataset.c}); break;
+    case "nexttext": if(isHost&&S.st==="guess"&&S.sub==="r"){ nextText(); bc(); render(); } break;
+    case "answer": { const field=$("#writtenAnswer"); const text=field?field.value.trim():L.draft.trim(); if(!text){ L.note="Écris une réponse avant de l’envoyer."; if(field) field.focus(); return; } L.draft=text; send({k:"answer",text}); render(); break; }
+    case "reveal":
+      if(!isHost) break;
+      if(S.st==="ask") reveal();
+      else if(S.st==="write") startGuess();
+      else if(S.st==="guess"&&S.sub==="g") revealOne();
+      else break;
+      bc(); render(); break;
     case "next": case "skip": if(isHost) next(); break;
     case "other": L.used.push(L.cand); L.cand=-1; render(); break;
     case "show": sendPhoto(); break;
@@ -566,6 +739,7 @@ function act(a,b){
   }
 }
 document.addEventListener("click", e => { const b=e.target.closest("[data-act]"); if(b) act(b.dataset.act,b); });
+document.addEventListener("input", e => { if(e.target && e.target.id==="writtenAnswer") L.draft=e.target.value; });
 document.addEventListener("change", e => {
   const t=e.target;
   if(t.dataset.type){ if(!isHost) return; L.cfg.types[t.dataset.type]=t.checked; bc(); render(); }
