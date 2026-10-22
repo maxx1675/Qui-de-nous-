@@ -139,6 +139,7 @@ textarea{margin-top:12px;resize:vertical}
       <label class="opt"><input type="checkbox" data-type="vote"><span>🗳️ <b>Vote</b><small>« Qui est le plus… ? » Chacun écrit sa réponse, puis on devine qui a écrit quoi.</small></span></label>
       <label class="opt"><input type="checkbox" data-type="anecdote"><span>🕵️ <b>Anecdote mystère</b><small>Tout le monde écrit une anecdote ; elles sont lues une par une et on devine l’auteur.</small></span></label>
       <label class="opt"><input type="checkbox" data-type="description"><span>🎭 <b>Qui est-ce&nbsp;?</b><small>Le jeu choisit une personne ; tous les autres la décrivent par écrit, puis on devine qui a écrit quoi.</small></span></label>
+      <label class="opt"><input type="checkbox" data-type="friend"><span>💛 <b>L’amitié</b><small>Une personne au hasard : on devine son plat, sa musique… et c’est elle qui valide les réponses.</small></span></label>
       <label class="opt"><input type="checkbox" data-type="yesno"><span>🙋 <b>Oui ou non</b><small>Chacun répond en secret. Les réponses et les prénoms sont révélés à la fin.</small></span></label>
       <label class="opt"><input type="checkbox" data-type="confession"><span>🤫 <b>Tu as déjà… ?</b><small>Réponds oui/non ; si oui, raconte l’anecdote. Les réponses seront révélées ensemble.</small></span></label>
       <label class="opt"><input type="checkbox" data-type="photo"><span>📸 <b>Photo mystère</b><small>À qui est cette photo&nbsp;? Dispo dès qu’un joueur a donné son accord.</small></span></label>
@@ -297,7 +298,152 @@ const CONFESSION = [
   "Tu as déjà fait quelque chose de tellement gênant que tu y repenses encore ?"
 ];
 
+/* ---------- Banque élargie (centaines de questions pour varier les parties) ---------- */
+VOTE.push(
+  "Qui mangerait une pizza à l’ananas sans broncher ?","Qui survivrait seul sur une île déserte ?","Qui pleure le plus facilement ?",
+  "Qui a le plus de chance de gagner à Koh-Lanta ?","Qui oublie toujours où il a posé ses clés ?","Qui est le plus fort pour mentir avec le sourire ?",
+  "Qui passe le plus de temps sur son téléphone ?","Qui serait le meilleur président ?","Qui est le plus susceptible de rater son train ?",
+  "Qui danserait sur une table sans se faire prier ?","Qui s’énerve le plus vite au volant ?","Qui est le plus gourmand ?",
+  "Qui ferait le tour du monde en sac à dos ?","Qui a le plus de chance de se marier en premier ?","Qui serait le meilleur parent ?",
+  "Qui a le plus beau sourire ?","Qui est le plus sportif ?","Qui est le plus paresseux ?","Qui est le plus intelligent du groupe ?",
+  "Qui parle le plus fort ?","Qui parle tout seul ?","Qui ronfle le plus ?","Qui est le plus rancunier ?","Qui pardonne le plus vite ?",
+  "Qui est le plus généreux ?","Qui serait un super acteur ?","Qui écrirait un livre un jour ?","Qui monterait sa propre entreprise ?",
+  "Qui devient quelqu’un d’autre au karaoké ?","Qui a le meilleur humour ?","Qui est le plus naïf ?","Qui croit tout ce qu’on lui raconte ?",
+  "Qui aurait peur d’une araignée minuscule ?","Qui a les pires goûts musicaux ?","Qui a la meilleure playlist ?","Qui est le plus maladroit ?",
+  "Qui casse toujours quelque chose ?","Qui oublierait l’anniversaire de son meilleur ami ?","Qui est le plus romantique ?","Qui est le plus cynique ?",
+  "Qui serait le plus mauvais en cuisine ?","Qui se prend pour un chef étoilé ?","Qui accepterait un pari stupide pour 10 euros ?",
+  "Qui est le plus sûr de lui ?","Qui est le plus timide ?","Qui est le plus bavard ?","Qui est le plus calme en toute circonstance ?",
+  "Qui ferait un excellent détective ?","Qui serait le premier à paniquer en cas d’incendie ?","Qui garderait son sang-froid en cas de catastrophe ?",
+  "Qui est le plus têtu quand il a tort ?","Qui lit le plus ?","Qui regarde le plus de séries ?","Qui joue le plus aux jeux vidéo ?",
+  "Qui est accro au café ?","Qui est incapable de se lever le matin ?","Qui est le plus matinal ?","Qui se coucherait à 3 h du matin en semaine ?",
+  "Qui a le plus de chances de devenir millionnaire ?","Qui serait le plus mauvais joueur de poker ?","Qui bluffe le mieux ?",
+  "Qui a le plus de style sans le savoir ?","Qui s’habille le plus mal ?","Qui passe le plus de temps dans la salle de bain ?",
+  "Qui oublie de répondre aux messages importants ?","Qui envoie des vocaux de 5 minutes ?","Qui a le plus de mal à garder un secret ?",
+  "Qui est le meilleur conteur d’histoires ?","Qui est toujours dans la lune ?","Qui prend le plus de photos ?","Qui aime le plus faire la fête ?",
+  "Qui rentrerait le premier d’une soirée ?","Qui resterait jusqu’au bout de la soirée ?","Qui est le plus compétitif ?","Qui triche aux jeux de société ?",
+  "Qui adopterait un animal exotique ?","Qui parle le mieux aux animaux ?","Qui est le plus écolo ?","Qui est le plus fêtard ?",
+  "Qui commanderait le plat le plus bizarre au restaurant ?","Qui ne finit jamais son assiette ?","Qui chipe dans l’assiette des autres ?",
+  "Qui serait le plus doué pour une arnaque ?","Qui a le plus de culture générale ?","Qui sait tout sur tout sans rien avoir vérifié ?",
+  "Qui se ferait avoir par un faux prince nigérian ?","Qui passerait une journée sans téléphone ?","Qui est le plus dépensier ?",
+  "Qui économise le plus ?","Qui est le plus organisé ?","Qui est toujours en retard sur ses rendez-vous médicaux ?","Qui a toujours froid ?",
+  "Qui a toujours chaud ?","Qui serait un bon prof ?","Qui serait un bon médecin ?","Qui est le plus doué pour consoler les autres ?",
+  "Qui donne les meilleurs conseils ?","Qui donne les pires conseils ?","Qui serait le plus gêné de chanter en public ?","Qui a le meilleur flair pour trouver un bon plan ?",
+  "Qui adore se plaindre ?","Qui est le plus optimiste ?","Qui est le plus pessimiste ?","Qui rirait à un enterrement ?","Qui pleurerait à un mariage ?",
+  "Qui improviserait un discours sans stress ?","Qui est le plus impulsif ?","Qui réfléchit trop avant d’agir ?","Qui serait le plus mauvais espion ?",
+  "Qui a le plus de chances d’être dans un reportage sur les fans de quelque chose d’improbable ?","Qui a déjà fait un bug dans une présentation ?"
+);
+VOTE_HOT.push(
+  "Qui a le plus de chances de se réveiller dans un endroit inconnu ?","Qui est le plus doué pour séduire ?","Qui a le plus d’ex ?",
+  "Qui embrasserait un inconnu sur un pari ?","Qui est le plus susceptible d’avoir un plan d’un soir ?","Qui ment sur son âge dans une appli de rencontre ?",
+  "Qui regarde le plus les profils des autres ?","Qui a déjà fait un faux profil ?","Qui serait infidèle sans culpabilité ?","Qui pardonnerait une infidélité ?",
+  "Qui a le plus de secrets inavoués ?","Qui prétend être plus riche qu’il ne l’est ?","Qui a déjà menti sur son CV ?","Qui dirait « je t’aime » trop vite ?",
+  "Qui a déjà pleuré à cause d’un message ?","Qui a déjà ghosté quelqu’un ?","Qui a le plus de chances de finir en garde à vue ?","Qui boit le plus ?",
+  "Qui tient le moins bien l’alcool ?","Qui fait les pires messages bourrés ?","Qui oublierait toute sa soirée ?","Qui couche le plus vite le premier soir ?",
+  "Qui a le plus de chances de se faire plaquer par SMS ?","Qui serait le plus mauvais au lit ?","Qui est le plus coquin dans ses pensées ?",
+  "Qui a déjà eu un crush sur un(e) pote ?","Qui est le plus susceptible de tomber amoureux de quelqu’un d’inaccessible ?","Qui trouve toujours le moyen de se mettre dans le pétrin ?",
+  "Qui a déjà dragué quelqu’un devant son partenaire sans le vouloir ?","Qui a les pires standards en amour ?","Qui est le plus manipulateur ?",
+  "Qui est le plus hypocrite ?","Qui parle le plus dans le dos des autres ?","Qui serait le meilleur arnaqueur ?","Qui a déjà volé quelque chose en magasin ?",
+  "Qui se ferait prendre en premier pour une bêtise ?","Qui a le casier judiciaire le plus probable ?","Qui ferait n’importe quoi pour de l’argent ?",
+  "Qui a le plus de chances d’être cancel sur les réseaux ?","Qui ferait un scandale dans un restaurant ?","Qui s’est déjà fait virer d’un endroit ?",
+  "Qui a la pire réputation sans le savoir ?","Qui a déjà fait pleurer quelqu’un ?","Qui est le plus susceptible de partir sans payer l’addition ?",
+  "Qui accepterait de dire un secret du groupe pour 100 euros ?","Qui est le plus fan de ragots ?","Qui garde le plus ses ex en contact ?",
+  "Qui a déjà aimé une vieille photo d’un ex par accident ?","Qui a le plus de photos compromettantes dans sa galerie ?","Qui a le plus de chances de poster quelque chose qu’il regrettera ?",
+  "Qui irait à un date juste pour un repas gratuit ?","Qui a déjà annulé un date au dernier moment ?","Qui est le plus jaloux en couple ?","Qui est le plus collant en couple ?",
+  "Qui est le plus froid en amour ?","Qui est le plus susceptible de se faire larguer le jour de son anniversaire ?","Qui tomberait dans le piège d’un arnaqueur sentimental ?",
+  "Qui a déjà fait semblant d’être ailleurs pour éviter quelqu’un ?","Qui a déjà fait croire qu’il était malade pour sécher un truc important ?"
+);
+ANEC.push(
+  "Le pire cadeau que tu aies reçu","Un moment où tu as eu très peur","Une fois où tu t’es perdu(e)","Le jour où tu as failli rater quelque chose d’important",
+  "Une rencontre qui a changé ta vie","Une mauvaise surprise le jour d’un anniversaire","Un moment où tu t’es senti(e) ridicule","Une fois où tu as dit la mauvaise chose au mauvais moment",
+  "Ton pire jour au travail ou à l’école","Une habitude bizarre que tu avais enfant","Un petit mensonge devenu énorme","Un souvenir de vacances inoubliable",
+  "Un coup de chance incroyable","Un moment où tout a failli mal tourner en voiture","Une fois où tu as fait rire tout le monde sans le vouloir",
+  "Une dispute stupide avec un ami","Une fois où tu t’es retrouvé(e) enfermé(e) quelque part","Un objet que tu as trouvé et gardé","Une manie dont tu n’es pas fier(ère)",
+  "Un jour où tu as oublié quelque chose d’essentiel","Une fois où tu t’es fait gronder injustement","Un moment de gloire que tu n’oublieras jamais","Une fois où tu as menti à tes parents",
+  "Un instant gênant avec un voisin","Une erreur de cuisine mémorable","Un animal qui t’a causé des ennuis","Une chute ridicule","Un moment où tu as eu le fou rire en classe",
+  "Une fois où tu as cru reconnaître quelqu’un et t’es trompé(e)","Une fois où tu as parlé à la mauvaise personne","Un voyage en transport raté","Une panne au pire moment",
+  "Un projet fou que tu as presque réalisé","Un défi stupide que tu as relevé","Une chose que tu as faite en cachette étant petit(e)","Un jour où tu as pleuré de rire",
+  "Une rencontre improbable dans la rue","Un moment où tu as voulu disparaître sous terre","Une fois où tu t’es fait piéger","Un secret de famille drôle",
+  "Un moment où tu as su que tu avais tort mais tu n’as rien dit","Une fois où tu as été vraiment fier(ère) de toi","Un souvenir de colonie ou de classe verte",
+  "Une soirée pyjama qui a mal tourné","Une fois où tu as mangé quelque chose de très étrange","Un jour de pluie mémorable","Une surprise que tu as ratée",
+  "Un message vocal que tu regrettes","Un moment où ton téléphone t’a trahi","Une fois où tu as fait semblant de comprendre","Une première fois mémorable (hors sujet gênant)",
+  "Une fois où tu as été pris(e) en flagrant délit","Une fois où tu as retenu ton fou rire au pire moment","Un cadeau que tu as offert et regretté","Une sortie entre amis qui a viré à l’aventure",
+  "Un souvenir d’enfance dont tu rigoles encore","Une dispute avec un frère ou une sœur","Une fois où tu as eu un coup de foudre amical","Un jour où tu t’es senti(e) invincible",
+  "Un moment où tu as menti pour sauver un ami","Une fois où tu as perdu quelque chose de précieux","Une fois où tu as ri au mauvais moment","Une rencontre dans un train ou un avion",
+  "Une fois où tu t’es trompé(e) de salle ou de porte","Un jour où tu as raté ton réveil","Une mésaventure en soirée","Une fois où quelqu’un t’a pris pour une autre personne",
+  "Un défi que tu as perdu et dont tu paies encore les conséquences","Une habitude que tes amis te reprochent","Une fois où tu as fait quelque chose d’interdit","Un moment où tu as cru que c’était la fin du monde"
+);
+ANEC_HOT.push(
+  "Un baiser mémorable","Le pire rencard de ta vie","Une fois où tu t’es fait choper par tes parents dans une situation gênante","Un message coquin envoyé à la mauvaise personne",
+  "Un crush secret qui s’est mal fini","Une soirée où tu as fait n’importe quoi après quelques verres","Un souvenir d’ex que tu voudrais effacer","Une fois où tu as menti à quelqu’un que tu aimais",
+  "Une situation où tu t’es retrouvé(e) dans le lit de la mauvaise personne","Une histoire d’amour impossible","Une fois où tu as été jaloux(se) à en perdre la tête",
+  "Un fou rire dans un moment très inapproprié","Une rupture mémorable","Un moment où tu as eu honte de ton ex","Une fois où tu t’es fait larguer de la pire manière"
+);
+DEFIS.push(
+  "décris-la en un seul mot","décris-la comme un animal","décris-la comme un objet du quotidien","décris-la comme un plat","décris ce qu’elle ferait dans un film d’horreur",
+  "invente son slogan de campagne","décris-la comme un super-héros","décris-la comme une chanson","décris sa pire manie","décris sa plus grande qualité",
+  "décris-la comme si c’était un personnage de série","raconte comment tu l’as rencontrée"
+);
+YESNO.push(
+  "Tu as déjà pleuré devant un film ?","Tu as déjà chanté sous la douche ?","Tu as déjà dansé seul(e) chez toi ?","Tu as déjà parlé tout seul à voix haute ?",
+  "Tu as déjà mangé quelque chose tombé par terre ?","Tu as déjà fait semblant de ne pas voir quelqu’un dans la rue ?","Tu as déjà dormi en classe ou au travail ?",
+  "Tu as déjà oublié le prénom de quelqu’un que tu connais bien ?","Tu as déjà ri de la chute de quelqu’un ?","Tu as déjà fait un faux numéro exprès ?",
+  "Tu as déjà lu le journal intime de quelqu’un ?","Tu as déjà copié sur quelqu’un à l’école ?","Tu as déjà menti sur ton âge ?","Tu as déjà fait semblant de téléphoner pour éviter quelqu’un ?",
+  "Tu as déjà posté une photo puis supprimé 5 minutes plus tard ?","Tu as déjà passé une nuit blanche pour un jeu vidéo ?","Tu as déjà mangé un repas entier au lit ?",
+  "Tu as déjà fait un tour sans payer dans les transports ?","Tu as déjà oublié ton propre numéro de téléphone ?","Tu as déjà mis un pull à l’envers sans t’en rendre compte ?",
+  "Tu as déjà réagi à un message juste pour être poli ?","Tu as déjà ignoré un appel puis rappelé en disant que tu n’avais pas entendu ?","Tu as déjà cherché ton téléphone alors que tu l’avais dans la main ?",
+  "Tu as déjà confondu droite et gauche en conduisant ?","Tu as déjà cuisiné un truc complètement raté ?","Tu as déjà gardé un cadeau que tu n’aimais pas ?","Tu as déjà fait croire que tu avais vu un film alors que non ?",
+  "Tu as déjà fait semblant de rire à une blague pas drôle ?","Tu as déjà pleuré en public ?","Tu as déjà chanté faux devant tout le monde ?","Tu as déjà eu un fou rire à un moment interdit ?",
+  "Tu as déjà dit « je suis presque arrivé » en étant encore chez toi ?","Tu as déjà inventé un prétexte pour finir un appel ?","Tu as déjà prétendu connaître une chanson que tu ne connaissais pas ?",
+  "Tu as déjà regardé tes messages en pleine conversation ?","Tu as déjà suivi quelqu’un sur les réseaux pour le stalker discrètement ?","Tu as déjà gardé une photo d’un ex ?","Tu as déjà eu un crush sur un prof ?",
+  "Tu as déjà posté quelque chose pour rendre quelqu’un jaloux ?","Tu as déjà parlé de quelqu’un dans son dos ?","Tu as déjà été jaloux(se) d’un ami ?","Tu as déjà fait semblant de dormir pour éviter une conversation ?",
+  "Tu as déjà fait une soirée où tu ne te souviens de rien ?","Tu as déjà dit « je t’aime » sans le penser ?","Tu as déjà ressenti quelque chose pour l’ex d’un ami ?","Tu as déjà demandé quelqu’un en couple en ami « juste pour voir » ?",
+  "Tu as déjà craqué pour quelqu’un de ce groupe ?","Tu as déjà envoyé un message à ton ex en pleine nuit ?","Tu as déjà fait un voyage sans rien préparer ?","Tu as déjà acheté quelque chose d’inutile en pleine nuit ?",
+  "Tu as déjà râlé contre quelqu’un puis fait exactement pareil ?","Tu as déjà fait une promesse que tu savais que tu ne tiendrais pas ?","Tu as déjà perdu quelque chose de précieux chez un ami ?","Tu as déjà fait une blague qui a mal tourné ?",
+  "Tu as déjà dit à quelqu’un « on se voit bientôt » sans le penser ?","Tu as déjà fait croire à un ami que tu étais occupé ?","Tu as déjà quitté un groupe de discussion sans prévenir ?","Tu as déjà été mis(e) dehors d’un cours ?",
+  "Tu as déjà dormi dans un endroit improbable ?","Tu as déjà participé à un jeu télévisé ou un concours ?","Tu as déjà dit à un inconnu que tu étais quelqu’un d’autre ?","Tu as déjà trouvé de l’argent par terre et gardé ?",
+  "Tu as déjà rendu un objet cassé en disant qu’il était déjà comme ça ?","Tu as déjà fait un cauchemar et appelé quelqu’un ?","Tu as déjà ri en pleurant en même temps ?","Tu as déjà été d’accord avec quelqu’un juste pour avoir la paix ?",
+  "Tu as déjà fait semblant de comprendre un sujet pendant une conversation entière ?","Tu as déjà googlé ton propre nom ?","Tu as déjà passé plus de 10 heures sur ton téléphone dans la journée ?","Tu as déjà mangé de la nourriture périmée ?",
+  "Tu as déjà fait du stop ?","Tu as déjà sauté une file d’attente ?","Tu as déjà fait un tour de montagnes russes en hurlant ?","Tu as déjà eu un objet fétiche d’enfance que tu gardes encore ?","Tu as déjà fait une bataille de nourriture ?",
+  "Tu as déjà fait une farce téléphonique ?","Tu as déjà cassé quelque chose et accusé quelqu’un d’autre ?","Tu as déjà mis ton alarme et l’as éteinte 10 fois de suite ?","Tu as déjà chanté dans la rue ?","Tu as déjà dit à quelqu’un qu’il avait un truc sur le visage alors que non ?",
+  "Tu as déjà rêvé de quelqu’un de ce groupe ?","Tu as déjà parlé en dormant ?","Tu as déjà marché dans quelque chose de dégoûtant avec des chaussettes ?","Tu as déjà confondu le nom de deux personnes devant elles ?","Tu as déjà fait pleurer quelqu’un sans le vouloir ?",
+  "Tu as déjà posté une story puis tout regretté ?","Tu as déjà répondu à un message dix jours plus tard ?","Tu as déjà fait un faux compliment ?","Tu as déjà dit à ta mère que tu avais mangé alors que non ?","Tu as déjà joué à un jeu de société en trichant ?",
+  "Tu as déjà dit « je n’ai rien fait » alors que si ?","Tu as déjà mis un cadeau reçu directement à la poubelle ?","Tu as déjà fait un jour sans te laver les dents ?","Tu as déjà gardé une chose empruntée beaucoup trop longtemps ?"
+);
+CONFESSION.push(
+  "Tu as déjà pleuré à cause d’un(e) ami(e) ?","Tu as déjà fait quelque chose d’illégal par erreur ?","Tu as déjà menti à la police ou à un contrôleur ?","Tu as déjà fait quelque chose de très dangereux sans réfléchir ?",
+  "Tu as déjà eu un accident ridicule ?","Tu as déjà été puni(e) injustement ?","Tu as déjà dû faire une excuse hyper gênante ?","Tu as déjà eu un fou rire au pire moment d’un événement sérieux ?",
+  "Tu as déjà embrassé quelqu’un en public et regretté ?","Tu as déjà fait une scène en pleine rue ?","Tu as déjà tout plaqué du jour au lendemain ?","Tu as déjà eu un crush sur quelqu’un de beaucoup plus âgé ?",
+  "Tu as déjà eu honte de tes parents en public ?","Tu as déjà été pris(e) à faire quelque chose d’interdit ?","Tu as déjà raconté une histoire en en changeant la moitié ?","Tu as déjà dit un secret qu’on t’avait confié ?",
+  "Tu as déjà été éconduit(e) de manière humiliante ?","Tu as déjà dit à quelqu’un quelque chose que tu regrettes depuis ?","Tu as déjà fait une chose en soirée dont on te parle encore ?","Tu as déjà fait une blague qui a blessé quelqu’un ?",
+  "Tu as déjà été si gêné(e) que tu as quitté la pièce ?","Tu as déjà pleuré en regardant un dessin animé ?","Tu as déjà passé une nuit dehors par accident ?","Tu as déjà été perdu(e) dans une ville étrangère ?",
+  "Tu as déjà fait semblant d’être quelqu’un d’autre ?","Tu as déjà eu un rendez-vous où tu n’as pas osé dire non ?","Tu as déjà reçu une amende ridicule ?","Tu as déjà été tellement fatigué(e) que tu t’es endormi(e) debout ?",
+  "Tu as déjà accepté un défi complètement fou ?","Tu as déjà été pris(e) en train de chanter seul(e) ?","Tu as déjà promis quelque chose en étant ivre que tu as tenu ?","Tu as déjà raté un examen important à cause d’une bêtise ?",
+  "Tu as déjà fait croire à un mensonge pendant des années ?","Tu as déjà cassé quelque chose de précieux et caché les morceaux ?","Tu as déjà fait quelque chose de très gênant dans un magasin ?","Tu as déjà pleuré dans les toilettes d’une soirée ?",
+  "Tu as déjà eu peur d’une chose complètement ridicule ?","Tu as déjà fait quelque chose de risqué pour impressionner quelqu’un ?","Tu as déjà trahi la confiance de quelqu’un ?","Tu as déjà fait rater un plan à tes amis ?",
+  "Tu as déjà eu un coup de cœur pour quelqu’un que tu n’aurais pas dû ?","Tu as déjà dit « je vais bien » alors que tout allait mal ?","Tu as déjà fait une fausse déclaration à un contrôle ?","Tu as déjà perdu un objet que tu as juré ne jamais avoir eu ?",
+  "Tu as déjà fait une réponse totalement hors sujet en classe ou en réunion ?","Tu as déjà voulu disparaître de honte ?","Tu as déjà été complètement ridicule devant quelqu’un qui te plaisait ?","Tu as déjà fait une chose que tu n’oseras jamais raconter à tes parents ?",
+  "Tu as déjà fait croire que tu étais amoureux(se) de quelqu’un ?","Tu as déjà quitté une soirée en cachette ?","Tu as déjà pris un risque stupide pour une photo ?","Tu as déjà écrit un message très long puis l’as supprimé ?",
+  "Tu as déjà été jaloux(se) au point de faire quelque chose de bizarre ?","Tu as déjà dit à quelqu’un que tu étais malade pour ne pas le voir ?","Tu as déjà vécu une situation qui aurait pu mal finir ?","Tu as déjà été complètement bluffé(e) par une arnaque ?",
+  "Tu as déjà fait une immense bêtise avec un ami que vous cachez encore ?","Tu as déjà fait quelque chose de fou pour une personne qui ne le méritait pas ?","Tu as déjà fait quelque chose en cachette de tes amis ?","Tu as déjà regretté un tatouage, une coupe ou un achat immédiat ?",
+  "Tu as déjà pris la défense de quelqu’un que tu ne supportais pas ?","Tu as déjà tout raconté à la mauvaise personne ?","Tu as déjà passé une soirée entière à éviter quelqu’un ?","Tu as déjà accepté un rendez-vous juste pour ne pas être impoli(e) ?",
+  "Tu as déjà fait un rêve gênant sur quelqu’un de ce groupe ?","Tu as déjà raté un vol, un train ou un bus à cause d’une bêtise ?","Tu as déjà fait une fausse excuse pour quitter un job ?","Tu as déjà pleuré à un mariage ?"
+);
+const FRIEND = [
+  "Plat préféré","Musique ou chanson préférée","Film préféré","Série préférée","Dessert préféré","Boisson préférée","Fast-food préféré","Chanteur ou chanteuse préféré(e)",
+  "Animal préféré","Pays dont il/elle rêve","Jeu vidéo préféré","Couleur préférée","Sport préféré","Saison préférée","Application la plus utilisée","Passe-temps préféré",
+  "Plus grande peur","Métier de rêve","Destination de vacances idéale","Émission préférée","Parfum de glace préféré","Livre ou BD préféré(e)","Marque de vêtements préférée",
+  "Souvenir d’enfance préféré","Pire plat de sa vie","Plus beau voyage","Super-pouvoir qu’il/elle voudrait","Heure de la journée préférée","Pizza préférée","Petit-déjeuner préféré",
+  "Film qu’il/elle a vu le plus de fois","Chanson qu’il/elle écoute en boucle","Dessin animé préféré enfant","Activité du dimanche idéale","Plus grande qualité selon lui/elle","Plus gros défaut selon lui/elle",
+  "Endroit où il/elle se sent le mieux","Objet qu’il/elle emporterait sur une île déserte","Surnom qu’on lui donne","Son premier téléphone ou sa première console","Plat qu’il/elle déteste",
+  "Légume qu’il/elle déteste","Fruit préféré","Ville préférée","Chose qui l’énerve le plus","Chose qui le/la fait toujours rire","Rêve qu’il/elle aimerait réaliser","Prénom qu’il/elle donnerait à un enfant",
+  "Style de musique qu’il/elle ne supporte pas","Youtubeur, streamer ou podcast préféré","Fringue dont il/elle ne se sépare pas","Moyen de transport préféré","Boisson d’un soir de soirée","Plat que sa famille prépare le mieux"
+];
+const FRIEND_HOT = [
+  "Plus grosse honte","Pire souvenir de soirée","Type d’homme ou de femme qui lui plaît","Plus grand regret","Pire rendez-vous","Chose qu’il/elle ne dira jamais à ses parents",
+  "Plus gros mensonge","Fantasme de vie idéale","Plus grande peur en amour","Personne célèbre sur qui il/elle a craqué"
+];
 const META = {
+  friend:{ico:"💛",name:"L’amitié",tc:"var(--amber)",how:"Une personne au hasard : devinez son favori par écrit. C’est elle qui valide chaque réponse (+1 si validée)."},
   vote:{ico:"🗳️",name:"Vote",tc:"var(--pink)",how:"Écris ta réponse (un prénom + pourquoi) sans te trahir. Ensuite les textes sont lus un par un : devine qui a écrit chacun. +1 si tu trouves, +1 pour l’auteur par joueur trompé."},
   anecdote:{ico:"🕵️",name:"Anecdote mystère",tc:"var(--amber)",how:"Tout le monde écrit une anecdote perso sur le thème. Les textes sont lus un par un : devine qui a écrit chacun. +1 si tu trouves, +1 pour l’auteur par joueur trompé."},
   description:{ico:"🎭",name:"Qui est-ce ?",tc:"var(--teal)",how:"Tous (sauf la personne décrite) écrivent sa description, sans son prénom. Les textes sont lus un par un : devine qui a écrit chacun. +1 si tu trouves, +1 pour l’auteur par joueur trompé."},
@@ -323,7 +469,7 @@ const ME = (()=>{ let v=""; try{v=sessionStorage.getItem("qdn:id")||"";}catch(e)
 let R=null, S=null, isHost=false, code="", DECK=[], lastSt=0, tk=0;
 let PH={i:-1,n:0,parts:[],img:""};
 const L={name:"",photos:[],ok:false,used:[],cand:-1,candFor:-1,out:null,seen:-1,note:"",draft:"",
-  cfg:{rounds:CONFIG.NOMBRE_DE_MANCHES,types:{vote:true,anecdote:true,description:true,yesno:true,confession:true,photo:false},spicy:false,custom:""}};
+  cfg:{rounds:CONFIG.NOMBRE_DE_MANCHES,types:{vote:true,anecdote:true,description:true,friend:true,yesno:true,confession:true,photo:false},spicy:false,custom:""}};
 const socket = io();
 const ROOM = Promise.resolve({join: async roomName => {
   const ok = await new Promise(resolve => socket.emit("join-room", roomName, resolve));
@@ -343,8 +489,8 @@ const ROOM = Promise.resolve({join: async roomName => {
 }});
 const nm = id => (S.pl.find(p=>p.id===id)||{n:"?"}).n;
 const online = () => new Set([ME, ...R.peers().map(p=>p.presence&&p.presence.id).filter(Boolean)]);
-const isW = t => ["vote","anecdote","description"].includes(t);
-const writers = () => S.pl.filter(p=>!(S.r.type==="description"&&p.id===S.r.target)).map(p=>p.id);
+const isW = t => ["vote","anecdote","description","friend"].includes(t);
+const writers = () => S.pl.filter(p=>!(["description","friend"].includes(S.r.type)&&p.id===S.r.target)).map(p=>p.id);
 const wcount = () => { const on=online(), w=writers().filter(x=>on.has(x)); return w.filter(x=>S.answers&&S.answers[x]).length+"/"+w.length; };
 const eligIds = () => (S.r.type==="vote" ? S.pl : S.pl.filter(p=>p.id!==S.r.who)).map(p=>p.id);
 const cfgOut = () => ({rounds:L.cfg.rounds,types:L.cfg.types,spicy:L.cfg.spicy});
@@ -394,6 +540,7 @@ function hostAct(d){
     else if(d.k==="vote"){
       if(S.ph!=="play"||!r) return;
       if(isW(r.type)){
+        if(r.type==="friend") return;
         if(S.st!=="guess"||S.sub!=="g") return;
         const a=S.order[S.gi];
         if(d.p===a||!writers().includes(d.c)||d.c===d.p) return;
@@ -414,6 +561,11 @@ function hostAct(d){
       if(isW(r.type)&&S.answers[d.p]) return;
       S.answers[d.p]=answer;
     }
+    else if(d.k==="judge"){
+      if(S.ph==="play"&&r&&r.type==="friend"&&S.st==="guess"&&S.sub==="g"&&d.p===r.target&&["yes","no"].includes(d.c)){
+        const a=S.order[S.gi]; S.jv=d.c==="yes"; S.sub="r"; if(S.jv) S.sc[a]=(S.sc[a]||0)+1;
+      }
+    }
     else if(d.k==="phshow"){ if(S.ph==="play"&&S.st==="prep"&&r.type==="photo"&&r.who===d.p) S.st="ask"; }
     else if(d.k==="phskip"){ if(S.ph==="play"&&S.st==="prep"&&r.type==="photo"&&r.who===d.p) return next(); }
   }
@@ -424,7 +576,7 @@ function auto(){
   const on=online();
   if(isW(S.r.type)){
     if(S.st==="write"){ const w=writers().filter(x=>on.has(x)); if(w.length&&w.every(x=>S.answers&&S.answers[x])) startGuess(); }
-    else if(S.st==="guess"&&S.sub==="g"){ const a=S.order[S.gi], g=writers().concat(S.r.type==="description"?[S.r.target]:[]).filter(x=>x!==a&&on.has(x)); if(g.length&&g.every(x=>S.vt[x]!==undefined)) revealOne(); }
+    else if(S.st==="guess"&&S.sub==="g"&&S.r.type!=="friend"){ const a=S.order[S.gi], g=writers().concat(S.r.type==="description"?[S.r.target]:[]).filter(x=>x!==a&&on.has(x)); if(g.length&&g.every(x=>S.vt[x]!==undefined)) revealOne(); }
     return;
   }
   if(S.st!=="ask") return;
@@ -444,24 +596,34 @@ function revealOne(){
   for(const p in S.vt){ if(S.vt[p]===a) S.sc[p]=(S.sc[p]||0)+1; else ko++; }
   S.sc[a]=(S.sc[a]||0)+ko;
 }
-function nextText(){ S.gi++; S.vt={}; S.sub="g"; }
-function makeDraw(first, rest){
-  let q = [...shuffle(first), ...shuffle(rest)];
-  return () => { if(!q.length) q = shuffle([...first, ...rest]); return q.shift(); };
+function nextText(){ S.gi++; S.vt={}; S.sub="g"; S.jv=null; }
+/* Mémoire anti-répétition : les questions déjà posées sur cet appareil (l’hôte) ne reviennent
+   qu’une fois toute la banque épuisée. */
+function makeDraw(first, rest, key){
+  let seen=[]; if(key){ try{ seen=JSON.parse(localStorage.getItem("qdn:s:"+key)||"[]"); }catch(e){} }
+  let q = [...shuffle(first), ...shuffle(rest.filter(x=>!seen.includes(x)))];
+  return () => {
+    if(!q.length){ seen=[]; q = shuffle([...first, ...rest]); }
+    const x=q.shift();
+    if(key && rest.includes(x)){ seen.push(x); try{ localStorage.setItem("qdn:s:"+key, JSON.stringify(seen.slice(-1500))); }catch(e){} }
+    return x;
+  };
 }
 function buildDeck(){
   const ids=S.pl.map(p=>p.id), own=S.pl.filter(p=>p.ok&&p.np).map(p=>p.id);
   const {rounds,spicy,types:ty,custom:cu}=L.cfg;
   const types=Object.keys(ty).filter(t=>ty[t]&&(t!=="photo"||own.length));
   const custom=cu.split("\n").map(s=>s.trim()).filter(Boolean);
-  const dv=makeDraw(custom, spicy?[...VOTE,...VOTE_HOT]:VOTE), da=makeDraw([], spicy?[...ANEC,...ANEC_HOT]:ANEC);
-  const dd=makeDraw([],DEFIS), dp=makeDraw([],ids), dh=makeDraw([],own);
+  const dv=makeDraw(custom, spicy?[...VOTE,...VOTE_HOT]:VOTE,"vote"), da=makeDraw([], spicy?[...ANEC,...ANEC_HOT]:ANEC,"anec");
+  const dd=makeDraw([],DEFIS,"defi"), dp=makeDraw([],ids), dh=makeDraw([],own);
+  const dy=makeDraw([],YESNO,"yesno"), dc=makeDraw([],CONFESSION,"conf"), df=makeDraw([], spicy?[...FRIEND,...FRIEND_HOT]:FRIEND,"friend");
   const deck=[]; let last;
   for(let k=0;k<rounds;k++){
     const opts=types.filter(t=>t!==last), t=pick(opts.length?opts:types); last=t;
     if(t==="vote") deck.push({type:t,text:dv()});
-    else if(t==="yesno") deck.push({type:t,text:pick(YESNO)});
-    else if(t==="confession") deck.push({type:t,text:pick(CONFESSION)});
+    else if(t==="yesno") deck.push({type:t,text:dy()});
+    else if(t==="confession") deck.push({type:t,text:dc()});
+    else if(t==="friend") deck.push({type:t,target:dp(),text:df()});
     else if(t==="anecdote") deck.push({type:t,text:da()});
     else if(t==="photo"){ const who=dh(); deck.push({type:t,who,key:who}); }
     else deck.push({type:t,target:dp(),rule:dd()});
@@ -471,7 +633,7 @@ function buildDeck(){
 function next(){
   S.i++;
   if(S.i>=S.N) { S.ph="end"; }
-  else { S.ph="play"; S.r=DECK[S.i]; S.st=S.r.type==="photo"?"prep":isW(S.r.type)?"write":"ask"; S.vt={}; S.answers={}; S.order=[]; S.gi=0; S.sub="g"; L.draft=""; }
+  else { S.ph="play"; S.r=DECK[S.i]; S.st=S.r.type==="photo"?"prep":isW(S.r.type)?"write":"ask"; S.vt={}; S.answers={}; S.order=[]; S.gi=0; S.sub="g"; S.jv=null; L.draft=""; }
   bc(); render();
 }
 function startGame(){
@@ -575,13 +737,14 @@ function gameW(){
   const r=S.r, M=META[r.type], n=S.N, last=S.i===n-1, W=writers(), me=W.includes(ME), ans=S.answers||{};
   const g=S.st==="guess", rev=g&&S.sub==="r", a=g?S.order[S.gi]:null;
   const fresh=L.seen!==S.i; L.seen=S.i; if(fresh) L.draft="";
-  const q = r.type==="description" ? (ME===r.target ? `Les autres te décrivent… <b>toi</b> 😏` : `Décris <b>${esc(nm(r.target))}</b>`) : esc(r.text);
+  const q = r.type==="friend" ? (ME===r.target ? `Thème : <b>${esc(r.text)}</b><br>Les autres devinent… c’est toi qui valides 😏` : `Devine pour <b>${esc(nm(r.target))}</b> : ${esc(r.text)}`)
+    : r.type==="description" ? (ME===r.target ? `Les autres te décrivent… <b>toi</b> 😏` : `Décris <b>${esc(nm(r.target))}</b>`) : esc(r.text);
   const rule = r.type==="description" ? `<p class="how">🎯 Consigne : ${esc(r.rule)}. N’écris pas son prénom.</p>` : "";
-  const ph = {vote:"Un prénom + pourquoi (ex : Léa, parce que…)",anecdote:"Raconte ton anecdote sans te trahir…",description:"Décris la personne sans écrire son prénom…"}[r.type];
+  const ph = {vote:"Un prénom + pourquoi (ex : Léa, parce que…)",anecdote:"Raconte ton anecdote sans te trahir…",description:"Décris la personne sans écrire son prénom…",friend:"Ta réponse (ex : des lasagnes)…"}[r.type];
   let card="", below="", nav="";
   if(!g){
     card=`<p class="big">${q}</p>${rule}<p class="how">${M.how}</p>`;
-    if(!me) below=`<div class="card center"><p class="hint">Les autres écrivent… patiente un instant.</p></div>`;
+    if(!me) below=`<div class="card center"><p class="hint">${r.type==="friend"?"Les autres écrivent leur réponse sur toi… tu les valideras ensuite.":"Les autres écrivent… patiente un instant."}</p></div>`;
     else if(ans[ME]) below=`<div class="card center"><p class="hint">✅ Ton texte est envoyé. On attend les autres.</p></div>`;
     else below=`<div class="card"><h2>✍️ Ton texte</h2><textarea id="writtenAnswer" rows="4" maxlength="500" placeholder="${esc(ph)}">${esc(L.draft)}</textarea><button class="btn primary big" data-act="answer">Envoyer mon texte</button></div>`;
     below+=`<p class="hint center">Textes reçus : <span id="wcount">${wcount()}</span></p>`;
@@ -589,7 +752,16 @@ function gameW(){
   } else {
     card=`<p class="how">Texte ${S.gi+1} sur ${S.order.length}</p><p class="how">${M.ico} ${q}</p><div class="txt">${esc(ans[a]||"")}</div>`;
     const on=online();
-    if(!rev){
+    const lastT0=S.gi>=S.order.length-1;
+    if(r.type==="friend"&&!rev){
+      below = ME===r.target
+        ? `<div class="card center"><h2>Cette réponse est-elle juste ?</h2><div class="bubbles"><button class="bubble" data-act="judge" data-c="yes">✅ Oui, validé</button><button class="bubble" data-act="judge" data-c="no">❌ Non</button></div></div>`
+        : `<div class="card center"><p class="hint">${a===ME?"C’est ta réponse ! ":""}${esc(nm(r.target))} décide si c’est la bonne réponse…</p></div>`;
+      if(isHost) nav=`<button class="link" data-act="skip">Passer cette manche</button>`;
+    } else if(r.type==="friend"){
+      below=`<div class="card center"><h2>${S.jv?"✅ Validé !":"❌ Refusé"}</h2><p class="hint">Réponse écrite par <b>${esc(nm(a))}</b>${S.jv?" · +1 point":""}</p></div>`;
+      nav = isHost ? `<div class="nav"><button class="btn primary" data-act="${lastT0?"next":"nexttext"}">${lastT0?(last?"Terminer la partie 🏁":"Manche suivante"):"Réponse suivante ➜"}</button></div>` : `<p class="hint">L’hôte passe à la suite.</p>`;
+    } else if(!rev){
       if(a===ME) below=`<div class="card center"><p class="hint">C’est ton texte ! Garde ton air innocent 😇</p></div>`;
       else below=`<div class="card center"><h2>Qui a écrit ça ?</h2><div class="bubbles">${W.filter(x=>x!==ME).map(id=>`<button class="bubble${S.vt[ME]===id?" on":""}" data-act="vote" data-c="${esc(id)}">${esc(nm(id))}</button>`).join("")}</div></div>`;
       const gs=W.concat(r.type==="description"?[r.target]:[]).filter(x=>x!==a&&on.has(x));
@@ -721,14 +893,14 @@ function act(a,b){
     case "rm": case "rp": if(isHost){ L.cfg.rounds=clamp(L.cfg.rounds+(a==="rp"?1:-1)); bc(); render(); } break;
     case "start": if(isHost&&!problem()) startGame(); break;
     case "again": if(isHost){ S.ph="lobby"; bc(); render(); } break;
-    case "vote": send({k:a,c:b.dataset.c}); break;
+    case "vote": case "judge": send({k:a,c:b.dataset.c}); break;
     case "nexttext": if(isHost&&S.st==="guess"&&S.sub==="r"){ nextText(); bc(); render(); } break;
     case "answer": { const field=$("#writtenAnswer"); const text=field?field.value.trim():L.draft.trim(); if(!text){ L.note="Écris une réponse avant de l’envoyer."; if(field) field.focus(); return; } L.draft=text; send({k:"answer",text}); render(); break; }
     case "reveal":
       if(!isHost) break;
       if(S.st==="ask") reveal();
       else if(S.st==="write") startGuess();
-      else if(S.st==="guess"&&S.sub==="g") revealOne();
+      else if(S.st==="guess"&&S.sub==="g"&&S.r.type!=="friend") revealOne();
       else break;
       bc(); render(); break;
     case "next": case "skip": if(isHost) next(); break;
