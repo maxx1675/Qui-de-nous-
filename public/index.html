@@ -136,7 +136,8 @@ textarea{margin-top:12px;resize:vertical}
           <button data-act="rp" aria-label="Plus de manches">+</button>
         </div>
       </div>
-      <label class="opt"><input type="checkbox" data-type="vote"><span>🗳️ <b>Vote</b><small>« Qui est le plus… ? » Chacun écrit sa réponse, puis on devine qui a écrit quoi.</small></span></label>
+      <label class="opt"><input type="checkbox" data-type="poll"><span>⏱️ <b>Vote express</b><small>Une question en gros (« Qui est le plus beau ? »), 15 secondes pour voter : le plus voté gagne autant de points que de votes.</small></span></label>
+      <label class="opt"><input type="checkbox" data-type="vote"><span>🗳️ <b>Vote écrit</b><small>« Qui est le plus… ? » Chacun écrit sa réponse, puis on devine qui a écrit quoi.</small></span></label>
       <label class="opt"><input type="checkbox" data-type="anecdote"><span>🕵️ <b>Anecdote mystère</b><small>Tout le monde écrit une anecdote ; elles sont lues une par une et on devine l’auteur.</small></span></label>
       <label class="opt"><input type="checkbox" data-type="description"><span>🎭 <b>Qui est-ce&nbsp;?</b><small>Le jeu choisit une personne ; tous les autres la décrivent par écrit, puis on devine qui a écrit quoi.</small></span></label>
       <label class="opt"><input type="checkbox" data-type="friend"><span>💛 <b>L’amitié</b><small>Une personne au hasard : on devine son plat, sa musique… et c’est elle qui valide les réponses.</small></span></label>
@@ -444,7 +445,8 @@ const FRIEND_HOT = [
 ];
 const META = {
   friend:{ico:"💛",name:"L’amitié",tc:"var(--amber)",how:"Une personne au hasard : devinez son favori par écrit. C’est elle qui valide chaque réponse (+1 si validée)."},
-  vote:{ico:"🗳️",name:"Vote",tc:"var(--pink)",how:"Écris ta réponse (un prénom + pourquoi) sans te trahir. Ensuite les textes sont lus un par un : devine qui a écrit chacun. +1 si tu trouves, +1 pour l’auteur par joueur trompé."},
+  poll:{ico:"⏱️",name:"Vote express",tc:"var(--pink)",how:"Vote pour un joueur avant la fin des 15 secondes. Le plus voté gagne autant de points que de votes reçus."},
+  vote:{ico:"🗳️",name:"Vote écrit",tc:"var(--pink)",how:"Écris ta réponse (un prénom + pourquoi) sans te trahir. Ensuite les textes sont lus un par un : devine qui a écrit chacun. +1 si tu trouves, +1 pour l’auteur par joueur trompé."},
   anecdote:{ico:"🕵️",name:"Anecdote mystère",tc:"var(--amber)",how:"Tout le monde écrit une anecdote perso sur le thème. Les textes sont lus un par un : devine qui a écrit chacun. +1 si tu trouves, +1 pour l’auteur par joueur trompé."},
   description:{ico:"🎭",name:"Qui est-ce ?",tc:"var(--teal)",how:"Tous (sauf la personne décrite) écrivent sa description, sans son prénom. Les textes sont lus un par un : devine qui a écrit chacun. +1 si tu trouves, +1 pour l’auteur par joueur trompé."},
   yesno:{ico:"🙋",name:"Oui ou non",tc:"var(--pink)",how:"Chacun répond en secret. À la révélation, le prénom de chaque joueur apparaît avec sa réponse."},
@@ -469,7 +471,7 @@ const ME = (()=>{ let v=""; try{v=sessionStorage.getItem("qdn:id")||"";}catch(e)
 let R=null, S=null, isHost=false, code="", DECK=[], lastSt=0, tk=0;
 let PH={i:-1,n:0,parts:[],img:""};
 const L={name:"",photos:[],ok:false,used:[],cand:-1,candFor:-1,out:null,seen:-1,note:"",draft:"",
-  cfg:{rounds:CONFIG.NOMBRE_DE_MANCHES,types:{vote:true,anecdote:true,description:true,friend:true,yesno:true,confession:true,photo:false},spicy:false,custom:""}};
+  cfg:{rounds:CONFIG.NOMBRE_DE_MANCHES,types:{poll:true,vote:true,anecdote:true,description:true,friend:true,yesno:true,confession:true,photo:false},spicy:false,custom:""}};
 const socket = io();
 const ROOM = Promise.resolve({join: async roomName => {
   const ok = await new Promise(resolve => socket.emit("join-room", roomName, resolve));
@@ -492,7 +494,7 @@ const online = () => new Set([ME, ...R.peers().map(p=>p.presence&&p.presence.id)
 const isW = t => ["vote","anecdote","description","friend"].includes(t);
 const writers = () => S.pl.filter(p=>!(["description","friend"].includes(S.r.type)&&p.id===S.r.target)).map(p=>p.id);
 const wcount = () => { const on=online(), w=writers().filter(x=>on.has(x)); return w.filter(x=>S.answers&&S.answers[x]).length+"/"+w.length; };
-const eligIds = () => (S.r.type==="vote" ? S.pl : S.pl.filter(p=>p.id!==S.r.who)).map(p=>p.id);
+const eligIds = () => (S.r.type==="poll" ? S.pl : S.pl.filter(p=>p.id!==S.r.who)).map(p=>p.id);
 const cfgOut = () => ({rounds:L.cfg.rounds,types:L.cfg.types,spicy:L.cfg.spicy});
 const msg = t => { $("#hmsg").textContent = t; };
 
@@ -526,6 +528,12 @@ function tick(){
   if(tk%3===0 && L.out && S && S.ph==="play" && S.i===L.out.i && S.st!=="prep") pushPhoto();
 }
 setInterval(tick,2000);
+setInterval(()=>{
+  if(!S||S.ph!=="play"||!S.r||S.r.type!=="poll"||S.st!=="ask") return;
+  const left=Math.ceil(Math.max(0,15-(Date.now()-(L.pt0||Date.now()))/1000));
+  const el=$("#ptimer"); if(el) el.textContent=left;
+  if(isHost&&S.end&&Date.now()>=S.end){ reveal(); bc(); render(); }
+},250);
 
 /* ---------- Logique de l’hôte ---------- */
 function uniq(n){ let m=n,k=2; while(S.pl.some(p=>p.n.toLowerCase()===m.toLowerCase())) m=n+" "+k++; return m; }
@@ -544,6 +552,9 @@ function hostAct(d){
         if(S.st!=="guess"||S.sub!=="g") return;
         const a=S.order[S.gi];
         if(d.p===a||!writers().includes(d.c)||d.c===d.p) return;
+        S.vt[d.p]=d.c;
+      } else if(r.type==="poll"||r.type==="photo"){
+        if(!ask||!eligIds().includes(d.p)||!valid(d.c)) return;
         S.vt[d.p]=d.c;
       } else {
         if(!ask||!eligIds().includes(d.p)) return;
@@ -584,7 +595,16 @@ function auto(){
   const writtenReady = S.r.type!=='confession' || e.every(id => S.vt[id] !== 'yes' || String(S.answers?.[id]||'').trim().length>0);
   if(e.length && e.every(x=>S.vt[x]!==undefined) && writtenReady) reveal();
 }
-function reveal(){ S.st="res"; }
+function reveal(){
+  const r=S.r, v=S.vt, add=(id,n)=>{S.sc[id]=(S.sc[id]||0)+n;};
+  S.st="res";
+  if(r.type==="poll"){
+    const t={}; Object.values(v).forEach(c=>t[c]=(t[c]||0)+1);
+    const m=Math.max(0,...Object.values(t)); if(m) for(const c in t) if(t[c]===m) add(c,m);
+  } else if(r.type==="photo"&&r.key){
+    for(const p in v) if(v[p]===r.key) add(p,1);
+  }
+}
 function startGuess(){
   const ids=Object.keys(S.answers||{}).filter(id=>writers().includes(id)&&String(S.answers[id]).trim());
   if(!ids.length) return;
@@ -620,7 +640,7 @@ function buildDeck(){
   const deck=[]; let last;
   for(let k=0;k<rounds;k++){
     const opts=types.filter(t=>t!==last), t=pick(opts.length?opts:types); last=t;
-    if(t==="vote") deck.push({type:t,text:dv()});
+    if(t==="vote"||t==="poll") deck.push({type:t,text:dv()});
     else if(t==="yesno") deck.push({type:t,text:dy()});
     else if(t==="confession") deck.push({type:t,text:dc()});
     else if(t==="friend") deck.push({type:t,target:dp(),text:df()});
@@ -633,7 +653,7 @@ function buildDeck(){
 function next(){
   S.i++;
   if(S.i>=S.N) { S.ph="end"; }
-  else { S.ph="play"; S.r=DECK[S.i]; S.st=S.r.type==="photo"?"prep":isW(S.r.type)?"write":"ask"; S.vt={}; S.answers={}; S.order=[]; S.gi=0; S.sub="g"; S.jv=null; L.draft=""; }
+  else { S.ph="play"; S.r=DECK[S.i]; S.st=S.r.type==="photo"?"prep":isW(S.r.type)?"write":"ask"; S.vt={}; S.answers={}; S.order=[]; S.gi=0; S.sub="g"; S.jv=null; S.end=S.r.type==="poll"?Date.now()+15000:0; L.draft=""; }
   bc(); render();
 }
 function startGame(){
@@ -706,7 +726,13 @@ function show(id){
 function render(){
   if(!S || !S.pl.some(p=>p.id===ME)) return;
   if(S.ph==="lobby"){ if($("#lobby").hidden) refreshPhotos(); show("lobby"); lobby(); }
-  else if(S.ph==="play" && S.r){ show("game"); game(); }
+  else if(S.ph==="play" && S.r){
+    show("game");
+    const ae=document.activeElement, k=[S.i,S.st,S.sub,S.gi,!!(S.answers&&S.answers[ME]),S.vt&&S.vt[ME],S.end].join("|");
+    // Pendant la saisie on ne reconstruit pas l’écran : sinon le champ perd le focus et le clavier se ferme.
+    if(ae&&ae.tagName==="TEXTAREA"&&ae.closest("#game")&&L.rk===k){ const w=$("#wcount"); if(w) w.textContent=wcount(); return; }
+    game(); L.rk=k;
+  }
   else { show("end"); end(); }
 }
 function lobby(){
@@ -730,10 +756,6 @@ function scoreCard(){
   return `<div class="card"><h2>🏆 Points</h2>${s.map(p=>`<div class="prow"><span>${esc(p.n)}</span><b>${S.sc[p.id]||0}</b></div>`).join("")}</div>`;
 }
 function gameW(){
-  const key=[S.i,S.st,S.sub,S.gi,!!(S.answers&&S.answers[ME])].join("|");
-  const ae=document.activeElement;
-  if(ae&&ae.id==="writtenAnswer"&&L.rk===key){ const w=$("#wcount"); if(w) w.textContent=wcount(); return; }
-  L.rk=key;
   const r=S.r, M=META[r.type], n=S.N, last=S.i===n-1, W=writers(), me=W.includes(ME), ans=S.answers||{};
   const g=S.st==="guess", rev=g&&S.sub==="r", a=g?S.order[S.gi]:null;
   const fresh=L.seen!==S.i; L.seen=S.i; if(fresh) L.draft="";
@@ -787,7 +809,7 @@ function game(){
   const fresh=L.seen!==S.i; L.seen=S.i; if(fresh) L.draft="";
   const btn=(p,act,on)=>`<button class="pick${on?" on":""}" data-act="${act}" data-c="${esc(p.id)}">${esc(p.n)}</button>`;
   let b="";
-  if(r.type==="vote") b=`<p class="big">${esc(r.text)}</p>`;
+  if(r.type==="poll"){ if(L.ptT!==S.end){ L.ptT=S.end; L.pt0=Date.now(); } b=`<p class="big">${esc(r.text)}</p>`+(ask?`<p class="how">⏱️ Fin du vote dans <b id="ptimer">15</b> s</p>`:""); }
   else if(r.type==="anecdote") b=`<p class="who">✍️ ${me?"Tu écris ton anecdote :":"Un joueur écrit son anecdote…"}</p><p class="big">${esc(r.text)}</p>`;
   else if(r.type==="description") b=`<p class="who">✍️ Qui écrit la description : <b>${esc(nm(r.who))}</b></p><p class="big">Décris la personne choisie par le jeu, sans écrire son prénom.</p>`;
   else if(["yesno","confession"].includes(r.type)) b=`<p class="big">${esc(r.text)}</p><p class="how">Réponds honnêtement : les prénoms et les réponses seront révélés ensemble.</p>${r.type==="confession"?"<p class=\"how\">Si tu réponds Oui, raconte ensuite brièvement ce qui s’est passé.</p>":""}`;
@@ -817,21 +839,20 @@ function game(){
       a=submitted?`<p class="hint">Ton texte est envoyé. Les autres joueurs votent maintenant.</p>`:`<h2>${r.type==="anecdote"?"Écris ton anecdote":"Écris la description"}</h2><textarea id="writtenAnswer" rows="4" maxlength="500" placeholder="Écris ici…">${esc(L.draft)}</textarea><button class="btn primary big" data-act="answer">Envoyer ma réponse</button>`;
       if(r.type==="anecdote") a+=`<p class="hint">Raconte une anecdote personnelle sur le thème. Les autres devront deviner qui l’a écrite.</p>`;
     } else if(e.includes(ME)){
-      a=`<h2>${r.type==="vote"?"Vote : qui correspond à la question ?":"Qui est la personne mystère ?"}</h2><div class="picks">${(r.type==="vote"||r.type==="anecdote"?S.pl:S.pl.filter(p=>p.id!==r.who)).map(p=>btn(p,"vote",S.vt[ME]===p.id)).join("")}</div>`;
+      a=`<h2>${r.type==="poll"?"Vote pour un joueur 👇":"À qui est cette photo ?"}</h2><div class="picks">${(r.type==="poll"?S.pl:S.pl.filter(p=>p.id!==r.who)).map(p=>btn(p,"vote",S.vt[ME]===p.id)).join("")}</div>`;
       if(['anecdote','description'].includes(r.type) && !S.answers?.[r.who]) a=`<p class="hint">${r.type==='anecdote'?'Un joueur écrit son anecdote…':esc(nm(r.who))+' écrit sa réponse…'}</p>`;
     } else a=`<p class="hint">Les autres joueurs répondent…</p>`;
     a+=`<p class="hint">Votes reçus : ${ee.filter(x=>S.vt[x]!==undefined).length}/${ee.length}</p>`;
   } else if(res){
-    if(r.type==="vote"){
+    if(r.type==="poll"){
       const t={}; Object.values(S.vt).forEach(c=>t[c]=(t[c]||0)+1); const mx=Math.max(1,...Object.values(t));
-      a=`<h2>Résultat</h2>`+S.pl.map(p=>({p,v:t[p.id]||0})).sort((x,y)=>y.v-x.v).map(o=>`<div class="bar"><i style="width:${o.v/mx*100}%"></i><span>${esc(o.p.n)}</span><b>${o.v}</b></div>`).join("");
+      a=`<h2>Résultat</h2>`+S.pl.map(p=>({p,v:t[p.id]||0})).sort((x,y)=>y.v-x.v).map(o=>`<div class="bar"><i style="width:${o.v/mx*100}%"></i><span>${esc(o.p.n)}</span><b>${o.v}</b></div>`).join("")+(Object.keys(t).length?`<p class="hint">🏆 ${S.pl.filter(p=>t[p.id]===mx).map(p=>esc(p.n)).join(", ")} ${S.pl.filter(p=>t[p.id]===mx).length>1?"gagnent":"gagne"} +${mx} point${mx>1?"s":""}</p>`:`<p class="hint">Personne n’a voté.</p>`);
     } else if(r.type==="yesno"){
       a=`<h2>Réponses révélées</h2>`+S.pl.map(p=>`<div class="prow"><span>${esc(p.n)}</span><b>${S.vt[p.id]==="yes"?"✅ OUI":S.vt[p.id]==="no"?"❌ NON":"— Pas de réponse"}</b></div>`).join("");
     } else if(r.type==="confession"){
       a=`<h2>Réponses et anecdotes révélées</h2>`+S.pl.map(p=>`<div class="card"><h2>${esc(p.n)} — ${S.vt[p.id]==="yes"?"✅ OUI":S.vt[p.id]==="no"?"❌ NON":"— Pas de réponse"}</h2>${S.vt[p.id]==="yes"?`<p>${esc(S.answers?.[p.id]||"Aucune anecdote envoyée.")}</p>`:""}</div>`).join("");
     } else {
-      const written=(S.answers&&S.answers[r.who])||"Aucune réponse écrite.";
-      a=`<h2>${r.type==="anecdote"?"Anecdote dévoilée":"Réponse écrite par "+esc(nm(r.who))}</h2><p>${esc(written)}</p><h2>${r.type==="anecdote"?"Cette anecdote appartenait à :":"La personne mystère était :"} <b>${r.key?esc(nm(r.key)):"non indiquée"}</b></h2>`+(r.key?e.map(x=>`<div class="prow"><span>${esc(nm(x))}</span><span>${S.vt[x]?esc(nm(x)):"—"}</span><b>${S.vt[x]===r.key?"✅ Bonne réponse · +1":"❌"}</b></div>`).join(""):"");
+      a=`<h2>C’était la photo de <b>${esc(nm(r.key))}</b> 📸</h2>`+e.map(x=>`<div class="prow"><span>${esc(nm(x))}</span><span>${S.vt[x]?esc(nm(S.vt[x])):"—"}</span><b>${S.vt[x]===r.key?"✅ +1":"❌"}</b></div>`).join("");
     }
     a=`<div class="card">${a}</div>`;
   }
@@ -888,7 +909,7 @@ function act(a,b){
   switch(a){
     case "create": enter(true); break;
     case "join": enter(false); break;
-    case "leave": leave(); break;
+    case "leave": if(S&&S.ph!=="lobby"&&!confirm("Quitter la partie en cours ?")) break; leave(); break;
     case "copy": copy(); break;
     case "rm": case "rp": if(isHost){ L.cfg.rounds=clamp(L.cfg.rounds+(a==="rp"?1:-1)); bc(); render(); } break;
     case "start": if(isHost&&!problem()) startGame(); break;
