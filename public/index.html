@@ -304,6 +304,9 @@ function tick(){
   if(isHost){ if(tk%2===0) bc(); }
   else{
     if(!S || !S.pl.some(p=>p.id===ME)) R.emit("act",{k:"join",p:ME,n:L.name}).catch(()=>{});
+    // Re-send profile during the lobby: the first consent/photo update can race
+    // with the host processing the join event. This keeps photo availability in sync.
+    if(S && S.ph==="lobby" && tk%3===0) R.emit("act",{k:"prof",p:ME,ok:L.ok?1:0,np:L.photos.length}).catch(()=>{});
     $("#warn").hidden = !S || Date.now()-lastSt<12000;
   }
   if(tk%3===0 && L.out && S && S.ph==="play" && S.i===L.out.i && S.st!=="prep") pushPhoto();
@@ -366,11 +369,15 @@ function buildDeck(){
 }
 function next(){
   S.i++;
-  if(S.i>=S.N) S.ph="end";
-  else { S.r=DECK[S.i]; S.st=S.r.type==="photo"?"prep":"ask"; S.vt={}; }
+  if(S.i>=S.N) { S.ph="end"; }
+  else { S.ph="play"; S.r=DECK[S.i]; S.st=S.r.type==="photo"?"prep":"ask"; S.vt={}; }
   bc(); render();
 }
-function startGame(){ DECK=buildDeck(); S.N=DECK.length; S.i=-1; S.sc={}; next(); }
+function startGame(){
+  DECK=buildDeck();
+  if(!DECK.length){ L.note="Impossible de créer la partie : sélectionne au moins un type de manche."; render(); return; }
+  S.N=DECK.length; S.i=-1; S.sc={}; next();
+}
 function problem(){
   const n=CONFIG.JOUEURS_MIN-S.pl.length;
   if(n>0) return `Il faut encore ${n} joueur${n>1?"s":""} dans le salon (minimum ${CONFIG.JOUEURS_MIN}).`;
